@@ -16,8 +16,7 @@ class Solution {
     }
     
     public int solution(int[] numbers, int target) {
-        dfs(1,numbers[0],numbers,target);
-        dfs(1,-1*numbers[0],numbers,target);
+        dfs(0,0,numbers,target);
         return answer;
     }
 }
