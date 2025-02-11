@@ -19,31 +19,30 @@ public class Main {
     		int x = cur[0];
     		int y = cur[1];
     		int w = cur[2];
+    		if(x == n-1 && y == m-1) {
+				return visited[x][y][w];
+			}
+    		
     		for(int i=0;i<4;i++) {
     			int nx = x + dx[i];
     			int ny = y + dy[i];
     			
     			if(nx<0 || ny < 0 || nx >= n|| ny >=m)continue;
     			
-    			if(data[nx][ny]==0) {
-    				if(visited[nx][ny][w] == 0) {
-    					visited[nx][ny][w] = visited[x][y][w] + 1;
-    					q.add(new int[]{nx,ny,w});
-    					if(nx == n-1 && ny == m-1) {
-    						return visited[nx][ny][w];
-    					}
-    				}
-    			}else {
-    				if(w<k) {
-    					if(visited[nx][ny][w+1] == 0) {
-    						visited[nx][ny][w+1] = visited[x][y][w] + 1;
-    						q.add(new int[] {nx,ny,w+1});
-    						if(nx == n-1 && ny == m-1) {
-        						return visited[nx][ny][w+1];
-        					}
-    					}
-    				}
+    			if(data[nx][ny]==0 && visited[nx][ny][w]==0) { // 길, 방문X
+    				visited[nx][ny][w] = visited[x][y][w] + 1;
+					q.add(new int[]{nx,ny,w});
+					continue;
     			}
+    			
+    			if(data[nx][ny]==1 && w<k && visited[nx][ny][w+1]==0) {//길, 부수기 가능, 방문x
+    				visited[nx][ny][w+1] = visited[x][y][w] + 1;
+					q.add(new int[] {nx,ny,w+1});
+					continue;
+    			}
+    			
+    			
+
     		}
     		
     	}
