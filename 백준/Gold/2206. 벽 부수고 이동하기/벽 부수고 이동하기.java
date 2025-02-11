@@ -17,7 +17,7 @@ public class Main {
 
 
 
-        while(true){
+        while(!q.isEmpty()){
             int[] cur = q.poll();
             for(int i=0;i<4;i++){
                 int nx = cur[0] + dx[i];
@@ -50,10 +50,9 @@ public class Main {
                 }
 
             }
-            if(q.isEmpty()) {
-            	return -1;
-            }
+            
         }
+        return -1;
         
     }
 
