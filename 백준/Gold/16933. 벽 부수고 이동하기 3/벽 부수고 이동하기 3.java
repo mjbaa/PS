@@ -32,30 +32,24 @@ public class Main {
                 int nd = (d + 1) %2;
 
                 if(nx<0 || ny < 0 || nx >=n|| ny >=m) continue;
-
-                if(data[nx][ny] == 0) { // 길
-                    if(!visited[nx][ny][w]) { // 방문 x
-                        q.add(new int[] {nx,ny,w,nd,dist+1});
-                        visited[nx][ny][w] = true;
-                    }
-                }else {//벽
-                    if(w < k) {//부수기 가능
-                        if(d == 0) {//낮
-                            if(!visited[nx][ny][w+1]) {
-                                q.add(new int[] {nx,ny,w+1,nd,dist+1});
-                                visited[nx][ny][w+1] =true;
-                            }
-                        }else {//밤
-                            if(!visited[nx][ny][w+1]) {
-                                q.add(new int[] {x,y,w,nd,dist+1});
-                            }
-                        }
-                    }
+                
+                if(data[nx][ny]==0 && !visited[nx][ny][w]) {//길, 방문x
+                	q.add(new int[] {nx,ny,w,nd,dist+1});
+                    visited[nx][ny][w] = true;
+                    continue;
                 }
+                
+                if(data[nx][ny]==1 && w<k && !visited[nx][ny][w+1]) {//벽, 부술 수 있음, 방문x
+                	if(d==0) {//낮
+                		q.add(new int[] {nx,ny,w+1,nd,dist+1});
+                        visited[nx][ny][w+1] =true;
+                	}else {//밤
+                		q.add(new int[] {x,y,w,nd,dist+1});
+                	}
+                }
+                
             }
         }
-
-
         return -1;
     }
 
