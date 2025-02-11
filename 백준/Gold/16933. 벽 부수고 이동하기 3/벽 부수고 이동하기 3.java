@@ -1,52 +1,66 @@
 import java.util.*;
 import java.io.*;
 
+
 public class Main {
     static int[][] data;
-    static boolean[][][] visited;  // 방문 여부만 저장
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
+    static boolean[][][] visited;
+    static int[] dx = {0,0,1,-1};
+    static int[] dy = {1,-1,0,0};
 
     static int bfs(int n, int m, int k) {
         Queue<int[]> q = new ArrayDeque<>();
-        q.add(new int[]{0, 0, 0, 1}); // (x, y, 벽 부순 개수, 이동 거리)
-        visited[0][0][0] = true; // 시작 지점 방문 체크
 
-        while (!q.isEmpty()) {
+        q.add(new int[] {0,0,0,0,1});
+        visited[0][0][0] = true;
+
+        while(!q.isEmpty()) {
             int[] cur = q.poll();
             int x = cur[0];
             int y = cur[1];
             int w = cur[2];
-            int dist = cur[3];
-            boolean isDay = (dist % 2 == 1); // 낮인지 여부
+            int d = cur[3];
+            int dist = cur[4];
 
-            if (x == n - 1 && y == m - 1) {
+            if(x==n-1 && y==m-1) {
                 return dist;
             }
 
-            for (int i = 0; i < 4; i++) {
+            for(int i=0;i<4;i++) {
                 int nx = x + dx[i];
                 int ny = y + dy[i];
+                int nd = (d + 1) %2;
 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                if(nx<0 || ny < 0 || nx >=n|| ny >=m) continue;
 
-                if (data[nx][ny] == 0 && !visited[nx][ny][w]) { // 벽이 아닐 때
-                    visited[nx][ny][w] = true;
-                    q.add(new int[]{nx, ny, w, dist + 1});
-                } else if (data[nx][ny] == 1 && w < k) { // 벽인데 부술 수 있는 경우
-                    if (isDay && !visited[nx][ny][w + 1]) { // 낮에만 부술 수 있음
-                        visited[nx][ny][w + 1] = true;
-                        q.add(new int[]{nx, ny, w + 1, dist + 1});
-                    } else if (!isDay) { // 밤이면 제자리에서 기다리기
-                        q.add(new int[]{x, y, w, dist + 1});
+                if(data[nx][ny] == 0) { // 길
+                    if(!visited[nx][ny][w]) { // 방문 x
+                        q.add(new int[] {nx,ny,w,nd,dist+1});
+                        visited[nx][ny][w] = true;
+                    }
+                }else {//벽
+                    if(w < k) {//부수기 가능
+                        if(d == 0) {//낮
+                            if(!visited[nx][ny][w+1]) {
+                                q.add(new int[] {nx,ny,w+1,nd,dist+1});
+                                visited[nx][ny][w+1] =true;
+                            }
+                        }else {//밤
+                            if(!visited[nx][ny][w+1]) {
+                                q.add(new int[] {x,y,w,nd,dist+1});
+                            }
+                        }
                     }
                 }
             }
         }
+
+
         return -1;
     }
 
-    public static void main(String[] args) throws IOException {
+
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
@@ -55,15 +69,21 @@ public class Main {
         int k = Integer.parseInt(st.nextToken());
 
         data = new int[n][m];
-        visited = new boolean[n][m][k + 1]; // boolean으로 변경
+        visited = new boolean[n][m][k+1];
 
-        for (int i = 0; i < n; i++) {
+        for(int i=0;i<n;i++) {
             String line = br.readLine();
-            for (int j = 0; j < m; j++) {
-                data[i][j] = line.charAt(j) - '0';
+            for(int j=0;j<m;j++) {
+                data[i][j]= line.charAt(j) - '0';
             }
         }
 
-        System.out.println(bfs(n, m, k));
+        if(n==1 && m == 1) {
+            System.out.println(1);
+            return;
+        }
+
+
+        System.out.println(bfs(n,m,k));
     }
 }
