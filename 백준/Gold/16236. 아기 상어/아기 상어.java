@@ -1,87 +1,94 @@
 import java.util.*;
 import java.io.*;
 
+
 public class Main {
-    static int[] dx = {0, 0, -1, 1};
-    static int[] dy = {1, -1, 0, 0};
     static int[][] data;
-    static int n;
+    static boolean[][] visited;
+    static int curX;
+    static int curY;
+    static int size=2;
+    static int cur_eat=0;
 
-    // 현재 상어 상태
-    static int x, y;
-    static int size = 2;
-    static int cur_eat = 0;
+    static int[] dx={0,0,1,-1};
+    static int[] dy={1,-1,0,0};
+    static int bfs(int n){
 
-    static int bfs() {
+
+        visited = new boolean[n][n];
         Queue<int[]> q = new LinkedList<>();
-        boolean[][] visited = new boolean[n][n];
-        int[][] dist = new int[n][n];
+        q.add(new int[]{curX,curY,0});
 
-        q.add(new int[]{x, y});
-        visited[x][y] = true;
 
+        int minX = -1;
+        int minY = -1;
         int minDist = Integer.MAX_VALUE;
-        int minX = -1, minY = -1;
 
-        while (!q.isEmpty()) {
+        while(!q.isEmpty()){
             int[] cur = q.poll();
-            int curX = cur[0], curY = cur[1];
+            int x = cur[0];
+            int y = cur[1];
+            int dist = cur[2];
 
-            for (int i = 0; i < 4; i++) {
-                int nx = curX + dx[i];
-                int ny = curY + dy[i];
+            for(int i=0;i<4;i++){
+                int nx = cur[0]+dx[i];
+                int ny = cur[1]+dy[i];
 
-                if (nx < 0 || nx >= n || ny < 0 || ny >= n) continue; // 범위 체크
-                if (visited[nx][ny] || data[nx][ny] > size) continue; // 방문 체크 및 이동 가능 여부
+
+                if(nx <0 || ny < 0|| nx >=n|| ny >=n) continue;
+                if(visited[nx][ny] || data[nx][ny] > size) continue;
 
                 visited[nx][ny] = true;
-                dist[nx][ny] = dist[curX][curY] + 1;
+                int nDist = dist+1;
 
-                if (data[nx][ny] > 0 && data[nx][ny] < size) { // 먹을 수 있는 물고기 발견
-                    if (dist[nx][ny] < minDist) {
-                        minDist = dist[nx][ny];
+                if(data[nx][ny] > 0 && data[nx][ny] < size){ // 먹을 수 있는 물고기 발견
+                    if(nDist < minDist){
+                        minDist = nDist;
                         minX = nx;
                         minY = ny;
-                    } else if (dist[nx][ny] == minDist) { // 거리가 같으면, 위쪽 → 왼쪽 우선
+                    }else if(nDist == minDist){
                         if (nx < minX || (nx == minX && ny < minY)) {
                             minX = nx;
                             minY = ny;
                         }
                     }
-                }
-                q.add(new int[]{nx, ny});
-            }
-        }
 
-        if (minX == -1) return -1; // 먹을 물고기가 없는 경우 종료
-        x = minX;
-        y = minY;
-        data[x][y] = 0; // 물고기 먹음
+                }
+                q.add(new int[]{nx, ny,nDist});
+
+
+            }
+
+        }
+        if(minDist == Integer.MAX_VALUE) return -1;
+        curX = minX;
+        curY = minY;
+        data[curX][curY] = 0;
         return minDist;
+
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        n = Integer.parseInt(br.readLine());
+        int n = Integer.parseInt(br.readLine());
         data = new int[n][n];
 
-        for (int i = 0; i < n; i++) {
+        for(int i=0;i<n;i++){
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < n; j++) {
+            for(int j=0;j<n;j++){
                 data[i][j] = Integer.parseInt(st.nextToken());
-                if (data[i][j] == 9) {
-                    x = i;
-                    y = j;
-                    data[i][j] = 0; // 상어 위치 초기화
+                if(data[i][j] == 9){
+                    curX = i;
+                    curY = j;
+                    data[i][j] = 0;
                 }
             }
         }
-
         int time = 0;
         while (true) {
-            int dist = bfs();
+            int dist = bfs(n);
             if (dist == -1) break;
             time += dist;
 
@@ -92,7 +99,8 @@ public class Main {
             }
         }
         System.out.println(time);
+
+
+
     }
-
-
 }
