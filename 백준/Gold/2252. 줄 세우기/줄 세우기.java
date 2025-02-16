@@ -32,10 +32,12 @@ public class Main {
             }
         }
 
-        List<Integer> result = new ArrayList<>();
+
+        StringBuilder sb = new StringBuilder();
+
         while(!q.isEmpty()){
             int node = q.poll();
-            result.add(node);
+            sb.append(node).append(" ");
 
             for(int dest : graph.get(node)){
                 indegree[dest]--;
@@ -45,10 +47,7 @@ public class Main {
             }
         }
 
-        StringBuilder sb = new StringBuilder();
-        for(int val : result){
-            sb.append(val).append(" ");
-        }
+
 
         System.out.println(sb.toString());
     }
