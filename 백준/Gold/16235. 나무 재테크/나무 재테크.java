@@ -12,7 +12,6 @@ class Main {
 			this.y = y;
 			this.age = age;
 		}
-		
 		@Override
 		public int compareTo(Tree t) {
 			return this.age - t.age;
@@ -24,10 +23,16 @@ class Main {
 	static int[] dy = {1,-1,0,0,-1,1,1,-1};
 	
 
-	static int[][] ground;
-	static int[][] A;
+	static int[][] ground; // 땅의 양분 정보
+	static int[][] A; // 더해질 A
+	
+	//나무 저장
+	//필요한 정보 : 좌표, age -> 나무들을 좌표 순서대로 접근 할 필요가 없음 : 3차원 배열 사용X
+	//나이 순서대로 접근해야함 -> 나이 기준 정렬 위해 Comparable, PQ 사용
 	static PriorityQueue<Tree> trees = new PriorityQueue<>();
-	static List<Tree> death = new ArrayList<>();
+	
+	// 죽은 나무 임시 저장용 : spring, summer (구분된 함수) 간 연결 위해 static 사용함
+	static List<Tree> death = new ArrayList<>(); 
 	
 	static void spring() {
 		PriorityQueue<Tree> temp = new PriorityQueue<>();
@@ -44,6 +49,7 @@ class Main {
 				temp.add(t);
 			}
 		}
+		//참조 변경 오류 발생 가능. trees를 여러 함수에서 사용할 경우 참조를 유지하는 방법으로 풀 것
 		//trees = temp;
 		trees.clear();
 		trees.addAll(temp);
@@ -71,6 +77,7 @@ class Main {
 				}
 			}
 		}
+		//Iterator 사용하는 도중에 collection를 변경하면 ConcurrentModificationException 발생 가능
 		trees.addAll(temp);
 	}
 	
