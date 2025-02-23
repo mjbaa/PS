@@ -1,5 +1,4 @@
 
-
 import java.util.*;
 import java.io.*;
 
@@ -51,7 +50,7 @@ class Main {
                 temp.add(t);
             }
         }
-        //참조 변경 오류 발생 가능. trees를 여러 함수에서 사용할 경우 참조를 유지하는 방법으로 풀 것
+        //참조 변경 오류 발생 가능. trees를 static 선언, 여러 함수에서 사용할 경우 참조를 유지하는 방법도 고려
         trees = temp;
         //trees.clear();
         //trees.addAll(temp);
@@ -62,7 +61,8 @@ class Main {
         for(Tree t : death) {
             ground[t.x][t.y] += (t.age/2);
         }
-        death.clear();
+        //death.clear();
+        death = new ArrayList<>();
     }
 
     static void fall() {
