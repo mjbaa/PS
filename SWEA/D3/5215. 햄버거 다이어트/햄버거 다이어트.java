@@ -1,5 +1,3 @@
-
-
 import java.io.*;
 import java.util.*;
 
@@ -12,11 +10,9 @@ public class Solution {
 	
 	static void dfs(int index, int cal, int sc) {
 		if(index == N) {
-			if(L < cal) return;
-			if(score < sc) {
-				score = sc;
+			if(cal <= L) {
+				score = Math.max(score,  sc);
 			}
-			
 			return;
 		}
 		
@@ -44,11 +40,7 @@ public class Solution {
 			
 			dfs(0,0,0);
 			
-			
 			System.out.println("#"+test_case+" "+score);
-			
 		}
-
 	}
-
 }
