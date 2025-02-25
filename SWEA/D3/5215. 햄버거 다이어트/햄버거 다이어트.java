@@ -1,48 +1,54 @@
 
-import java.util.*;
+
 import java.io.*;
- 
-/*
-   사용하는 클래스명이 Solution 이어야 하므로, 가급적 Solution.java 를 사용할 것을 권장합니다.
-   이러한 상황에서도 동일하게 java Solution 명령으로 프로그램을 수행해볼 수 있습니다.
- */
-class Solution
-{
-    static int maxScore;
-    static void dfs(int[] scores, int[] calories, int index, int currentScore, int currentCalorie, int limit) {
-        if (currentCalorie > limit) return;
-        if (index == scores.length) {
-            maxScore = Math.max(maxScore, currentScore);
-            return;
-        }
-        dfs(scores, calories, index + 1, currentScore, currentCalorie, limit);
-        dfs(scores, calories, index + 1, currentScore + scores[index], currentCalorie + calories[index], limit);
-    }
-     
-    public static void main(String args[]) throws Exception{
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int T = Integer.parseInt(br.readLine()); // 테스트 케이스 개수
- 
-        for (int t = 1; t <= T; t++) {
-            StringTokenizer st = new StringTokenizer(br.readLine());
-            int N = Integer.parseInt(st.nextToken()); // 재료의 수
-            int L = Integer.parseInt(st.nextToken()); // 제한 칼로리
- 
-            int[] scores = new int[N];
-            int[] calories = new int[N];
- 
-            for (int i = 0; i < N; i++) {
-                st = new StringTokenizer(br.readLine());
-                scores[i] = Integer.parseInt(st.nextToken());
-                calories[i] = Integer.parseInt(st.nextToken());
-            }
- 
-            maxScore = 0;
-            dfs(scores, calories, 0, 0, 0, L);
- 
-            System.out.println("#" + t + " " + maxScore);
-        }
-         
-         
-    }
+import java.util.*;
+
+public class Solution {
+	static int N;
+	static int L;
+	static int score;
+	static int[][] foods;
+	
+	
+	static void dfs(int index, int cal, int sc) {
+		if(index == N) {
+			if(L < cal) return;
+			if(score < sc) {
+				score = sc;
+			}
+			
+			return;
+		}
+		
+		dfs(index+1, cal,sc);
+		dfs(index+1, cal + foods[index][1], sc + foods[index][0]);
+		
+	}
+	
+	public static void main(String[] args) throws Exception{
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		StringTokenizer st;
+		int t = Integer.parseInt(br.readLine());
+		for(int test_case = 1; test_case <= t; test_case++) {
+			score = Integer.MIN_VALUE;
+			st = new StringTokenizer(br.readLine());
+			N = Integer.parseInt(st.nextToken());
+			L = Integer.parseInt(st.nextToken());
+			foods = new int[N][2];
+			
+			for(int i=0;i<N;i++) {
+				st = new StringTokenizer(br.readLine());
+				foods[i][0] = Integer.parseInt(st.nextToken());
+				foods[i][1] = Integer.parseInt(st.nextToken());
+			}
+			
+			dfs(0,0,0);
+			
+			
+			System.out.println("#"+test_case+" "+score);
+			
+		}
+
+	}
+
 }
