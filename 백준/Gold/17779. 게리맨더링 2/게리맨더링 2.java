@@ -9,28 +9,6 @@ class Main {
 	static int totalSum = 0;
 	static boolean[][] border;
 	
-	static List<int[]> findD(int x, int y) {
-		List<int[]> result = new ArrayList<>();
-		
-		int d1Max = Math.min(n-x, n-y);
-		
-		for(int d1 = 1;d1<d1Max;d1++) {
-			int d2Max = Math.min(n-y, n-x-d1);
-			for(int d2 = 1; d2 < d2Max;d2++) {
-				result.add(new int[] {d1,d2});
-			}
-		}
-//		int d1Max = Math.min(n - x - 1, y);
-//		for (int d1 = 1; d1 <= d1Max; d1++) {
-//		    int d2Max = Math.min(n - (y + d1) - 1, x + d1);
-//		    for (int d2 = 1; d2 <= d2Max; d2++) {
-//		        result.add(new int[]{d1, d2});
-//		    }
-//		}
-
-		
-		return result;//d1, d2 의 list
-	}
 	
 	static void findMin(int x, int y, int d1, int d2) {
 		border = new boolean[n][n];
