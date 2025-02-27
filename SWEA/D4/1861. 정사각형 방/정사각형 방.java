@@ -2,74 +2,81 @@ import java.io.*;
 import java.util.*;
  
 public class Solution {
-    static int n;
-    static int[][] data;
-    static int[] dx = {0, 0, 1, -1};
-    static int[] dy = {1, -1, 0, 0};
-     
-    static int start;
-    static int max;
-     
-    static int bfs(int i, int j) {
-        int moveCount = 1;
-        Queue<int[]> queue = new LinkedList<>();
-        queue.offer(new int[] {i, j});
-         
-        while (!queue.isEmpty()) {
-            int[] cur = queue.poll();
-            int x = cur[0];
-            int y = cur[1];
-             
-            for (int d = 0; d < 4; d++) {
-                int nx = x + dx[d];
-                int ny = y + dy[d];
- 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
-                if (data[nx][ny] != data[x][y] + 1) continue;
-                 
-                queue.offer(new int[] {nx, ny});
-                moveCount++;
-            }
-        }
-        return moveCount;
-    }
- 
+    static int n,m;
+    static int[][] arr;
+    static boolean[] visited;
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringTokenizer st;
+        StringTokenizer st = null;
         StringBuilder sb = new StringBuilder();
-        int t = Integer.parseInt(br.readLine());
  
-        for (int test_case = 1; test_case <= t; test_case++) {
+        int tc = Integer.parseInt(br.readLine());
+        for (int t = 1; t <= tc; t++) {
             n = Integer.parseInt(br.readLine());
-            data = new int[n][n];
+            arr = new int[n][n];
+            m=n*n;
+            visited=new boolean[m+1];
+ 
+ 
+            // 숫자 i의 위치를 담는 배열
+            // ex) 숫자 1이 (2,3) 에 존재한다면 nums[1]=(2,3) 이 들어감
+            Point[] nums=new Point[m+1];
+ 
  
             for (int i = 0; i < n; i++) {
                 st = new StringTokenizer(br.readLine());
-                for (int j = 0; j < n; j++) {
-                    data[i][j] = Integer.parseInt(st.nextToken());
+                for (int j = 0; j < n; j++){
+                    arr[i][j] = Integer.parseInt(st.nextToken());
+                    nums[arr[i][j]] = new Point(i, j);
                 }
             }
  
-            start = Integer.MAX_VALUE;
-            max = 0;
  
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    int moves = bfs(i, j);
- 
-                    if (moves > max) {
-                        max = moves;
-                        start = data[i][j];
-                    } else if (moves == max) {
-                        start = Math.min(start, data[i][j]);
-                    }
+            int answer=0,max=0;
+            for (int i = 1; i <=m; i++) {
+                if(visited[i])
+                    continue;
+                int cnt = move(nums[i]);
+                if (cnt > max) {
+                    answer= i;
+                    max=cnt;
                 }
             }
- 
-            sb.append("#").append(test_case).append(" ")
-              .append(start).append(" ").append(max).append("\n");
+            sb.append("#").append(t).append(" ").append(answer)
+                    .append(" ").append(max).append("\n");
         }
         System.out.println(sb);
+    }
+ 
+    static int move(Point start) {
+        int[] dx = {1, -1, 0, 0};
+        int[] dy = {0, 0 ,1, -1};
+        int cnt=0;
+        Queue<Point> q = new ArrayDeque<>();
+        q.add(start);
+        visited[m]=true;
+        while (!q.isEmpty()) {
+            Point cur = q.poll();
+            cnt++;
+ 
+            for (int i = 0; i < 4; i++) {
+                int nx = cur.x + dx[i];
+                int ny = cur.y + dy[i];
+                if(nx<0 || nx>=n || ny<0 || ny>=n || arr[nx][ny]!=arr[cur.x][cur.y]+1)
+                    continue;
+                q.add(new Point(nx, ny));
+                visited[arr[nx][ny]]=true;
+            }
+        }
+        return cnt;
+    }
+}
+ 
+class Point{
+    int x,y;
+ 
+    public Point(int x, int y) {
+        this.x=x;
+        this.y=y;
     }
 }
