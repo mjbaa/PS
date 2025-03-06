@@ -38,28 +38,25 @@ public class Main {
     	
     	result[a][0] +=1;
 		result[b][2] += 1;
-//		if (result[a][0] <= data[a][0] && result[b][2] <= data[b][2]) {
-//			dfs(midx+1);
-//		}
-		dfs(midx+1);
+		if (result[a][0] <= data[a][0] && result[b][2] <= data[b][2]) {
+			dfs(midx+1);
+		}
 		result[a][0] -=1;
 		result[b][2] -= 1;
 		
 		result[a][1] +=1;
 		result[b][1] += 1;
-//		if (result[a][1] <= data[a][1] && result[b][1] <= data[b][1]) {
-//			dfs(midx+1);	
-//		}
-		dfs(midx+1);
+		if (result[a][1] <= data[a][1] && result[b][1] <= data[b][1]) {
+			dfs(midx+1);	
+		}
 		result[a][1] -=1;
 		result[b][1] -= 1;
 		
 		result[a][2] +=1;
 		result[b][0] += 1;
-//		if (result[a][2] <= data[a][2] && result[b][0] <= data[b][0]) {
-//			dfs(midx+1);
-//		}
-		dfs(midx+1);
+		if (result[a][2] <= data[a][2] && result[b][0] <= data[b][0]) {
+			dfs(midx+1);
+		}
 		result[a][2] -=1;
 		result[b][0] -= 1;
     }
