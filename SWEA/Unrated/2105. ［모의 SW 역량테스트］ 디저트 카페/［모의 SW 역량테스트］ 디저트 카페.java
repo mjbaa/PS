@@ -1,7 +1,8 @@
+
 import java.io.*;
 import java.util.*;
- 
-class Solution{
+
+public class Solution {
 	static int n, max;
     static int[][] data;
 
@@ -11,6 +12,8 @@ class Solution{
     static int[] dy = {1, -1, -1, 1};
     
     static void dfs(int sx, int sy, int x, int y, int cnt, int d) {
+    	if(d==2 && cnt*2 < max) return;
+    	
     	if (x == sx+1 && y == sy-1 && cnt >= 4) {
             max = Math.max(max, cnt);
             return;
