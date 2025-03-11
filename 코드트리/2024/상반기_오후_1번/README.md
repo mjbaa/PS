@@ -1,4 +1,4 @@
-# 마법의 숲 탐색
+# [LV 13] 마법의 숲 탐색
 
 [문제 링크](https://www.codetree.ai/ko/frequent-problems/problems/magical-forest-exploration/description) 
 
