@@ -2,32 +2,31 @@ import java.util.*;
 import java.io.*;
  
 public class Main {
-    static final int MOD = 1000000;
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String str = br.readLine();
  
-        int dp[] = new int[str.length() + 1];
+        long dp[] = new long[str.length() + 1];
         dp[0] = 1;
  
         for (int i = 1; i <= str.length(); i++) {
-            int one = str.charAt(i-1) - '0';
-            if (one >= 1 && one <= 9) {
+            int cur = str.charAt(i-1) - '0';
+            if (cur >= 1 && cur <= 9) {
                 dp[i] += dp[i - 1];
-                dp[i] %= MOD;
+                dp[i] %= 1000000;
             }
  
             if(i == 1) continue;
  
-            int two = str.charAt(i - 2) - '0';
+            int pre = str.charAt(i - 2) - '0';
  
-            if(two == 0) continue;
+            if(pre == 0) continue;
  
-            int ten = two * 10 + one;
+            int ten = pre * 10 + cur;
  
-            if (ten >= 10 && ten <= 26) {
+            if (ten <= 26) {
                 dp[i] += dp[i - 2];
-                dp[i] %= MOD;
+                dp[i] %= 1000000;
             }
         }
         System.out.println(dp[str.length()]);
