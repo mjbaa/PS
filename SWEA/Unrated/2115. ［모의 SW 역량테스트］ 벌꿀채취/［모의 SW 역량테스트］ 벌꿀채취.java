@@ -31,7 +31,9 @@ public class Solution {
             // 첫 번째 일꾼
             for (int i1 = 0; i1 < n; i1++) {
                 for (int j1 = 0; j1 <= n - m; j1++) {
-                    int first = get(i1, j1);
+                	max = 0;
+                	dfs(i1,j1,0,0,0);
+                    int first = max;
 
                     // 두 번째 일꾼
                     for (int i2 = i1; i2 < n; i2++) {
@@ -42,7 +44,10 @@ public class Solution {
                     	
                     	
                         for (int j2 = j; j2 <= n - m; j2++) {
-                            int second = get(i2, j2);
+                        	max = 0;
+                        	dfs(i2,j2,0,0,0);
+                            int second = max;
+                            
                             result = Math.max(result, first + second);
                         }
                     }
@@ -56,23 +61,23 @@ public class Solution {
 
     static int get(int i, int j) {
         max = 0;
-        subset(i, j, 0, 0, 0);
+        dfs(i, j, 0, 0, 0);
         return max;
     }
 
-    static void subset(int i, int j, int depth, int sum, int total) {
+    static void dfs(int i, int j, int cnt, int sum, int total) {
         if (sum > c) return;
-        if (depth == m) {
+        if (cnt == m) {
         	max = Math.max(max, total);
             return;
         }
 
-        int val = map[i][j + depth];
+        int val = map[i][j + cnt];
 
         //포함
-        subset(i, j, depth + 1, sum + val, total + val * val);
+        dfs(i, j, cnt + 1, sum + val, total + val * val);
 
         //미포함
-        subset(i, j, depth + 1, sum, total);
+        dfs(i, j, cnt + 1, sum, total);
     }
 }
