@@ -74,10 +74,10 @@ public class Main {
         int e2 = dijk(must[1], must[0]);
         int f = dijk(must[0], n - 1);
 
-        long path1 = (long) a + b + c;
-        long path2 = (long) d + e2 + f;
+        int path1 =  a + b + c;
+        int path2 =  d + e2 + f;
 
-        long result = Math.min(path1, path2);
+        int result = Math.min(path1, path2);
 
         // 경로 중 하나라도 도달 불가일 경우 처리
         if (a == Integer.MAX_VALUE || b == Integer.MAX_VALUE || c == Integer.MAX_VALUE ||
