@@ -18,9 +18,10 @@ public class Main {
     static int n, e;
     static List<Node>[] graph;
     static int[] must = new int[2];
-
-    static int dijk(int start, int end) {
-        int[] cost = new int[n];
+    static int[] cost;
+    
+    static void dijk(int start) {
+//        int[] cost = new int[n];
         Arrays.fill(cost, Integer.MAX_VALUE);
         PriorityQueue<Node> pq = new PriorityQueue<>();
         cost[start] = 0;
@@ -37,7 +38,6 @@ public class Main {
             }
         }
 
-        return cost[end];
     }
 
     public static void main(String[] args) throws IOException {
@@ -49,6 +49,8 @@ public class Main {
         e = Integer.parseInt(st.nextToken());
 
         graph = new ArrayList[n];
+        cost = new int[n];
+        
         for (int i = 0; i < n; i++) graph[i] = new ArrayList<>();
 
         for (int i = 0; i < e; i++) {
@@ -65,23 +67,36 @@ public class Main {
         must[1] = Integer.parseInt(st.nextToken()) - 1;
 
         // 경로 1: 0 -> must[0] -> must[1] -> n-1
-        int a = dijk(0, must[0]);
-        int b = dijk(must[0], must[1]);
-        int c = dijk(must[1], n - 1);
-
-        // 경로 2: 0 -> must[1] -> must[0] -> n-1
-        int d = dijk(0, must[1]);
-        int e2 = dijk(must[1], must[0]);
-        int f = dijk(must[0], n - 1);
+        
+        dijk(must[0]);
+        int a = cost[0];
+        int b = cost[must[1]];
+        int f = cost[n-1];
+        
+        
+        dijk(must[1]);
+        int e = cost[must[0]];
+        int d = cost[0];
+        int c = cost[n-1];
+        
+        
+//        int a = dijk(0, must[0]);
+//        int b = dijk(must[0], must[1]);
+//        int c = dijk(must[1], n - 1);
+//
+//        // 경로 2: 0 -> must[1] -> must[0] -> n-1
+//        int d = dijk(0, must[1]);
+//        int e2 = dijk(must[1], must[0]);
+//        int f = dijk(must[0], n - 1);
 
         int path1 =  a + b + c;
-        int path2 =  d + e2 + f;
+        int path2 =  d + e + f;
 
         int result = Math.min(path1, path2);
 
         // 경로 중 하나라도 도달 불가일 경우 처리
         if (a == Integer.MAX_VALUE || b == Integer.MAX_VALUE || c == Integer.MAX_VALUE ||
-            d == Integer.MAX_VALUE || e2 == Integer.MAX_VALUE || f == Integer.MAX_VALUE) {
+            d == Integer.MAX_VALUE || e == Integer.MAX_VALUE || f == Integer.MAX_VALUE) {
             System.out.println(-1);
         } else {
             System.out.println(result);
