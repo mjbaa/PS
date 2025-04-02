@@ -67,7 +67,7 @@ public class Main {
         must[1] = Integer.parseInt(st.nextToken()) - 1;
 
         // 경로 1: 0 -> must[0] -> must[1] -> n-1
-        
+//      // 경로 2: 0 -> must[1] -> must[0] -> n-1
         dijk(must[0]);
         int a = cost[0];
         int b = cost[must[1]];
@@ -79,15 +79,7 @@ public class Main {
         int d = cost[0];
         int c = cost[n-1];
         
-        
-//        int a = dijk(0, must[0]);
-//        int b = dijk(must[0], must[1]);
-//        int c = dijk(must[1], n - 1);
-//
-//        // 경로 2: 0 -> must[1] -> must[0] -> n-1
-//        int d = dijk(0, must[1]);
-//        int e2 = dijk(must[1], must[0]);
-//        int f = dijk(must[0], n - 1);
+
 
         int path1 =  a + b + c;
         int path2 =  d + e + f;
