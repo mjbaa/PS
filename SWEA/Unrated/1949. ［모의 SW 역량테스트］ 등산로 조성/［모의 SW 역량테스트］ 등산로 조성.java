@@ -67,7 +67,7 @@ public class Solution {
         		for(int j=0;j<n;j++) {
         			data[i][j] = Integer.parseInt(st.nextToken());
         			if(max < data[i][j]) {
-        				starts = new ArrayList<>();
+        				starts.clear();
         				max = data[i][j];
         			}
         			if(max == data[i][j]) {
