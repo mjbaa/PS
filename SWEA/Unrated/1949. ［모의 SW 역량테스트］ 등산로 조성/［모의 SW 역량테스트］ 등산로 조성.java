@@ -16,8 +16,10 @@ public class Solution {
 	static boolean flag = true;
 	
 	static void dfs(int x,int y, int len) {
-		visited[x][y] = true;
 		int cur = data[x][y];
+		if(len + cur <= maxLen) return;
+		visited[x][y] = true;
+		
 		
 		for(int i=0;i<4;i++) {
 			int nx = x + dx[i];
@@ -67,7 +69,7 @@ public class Solution {
         		for(int j=0;j<n;j++) {
         			data[i][j] = Integer.parseInt(st.nextToken());
         			if(max < data[i][j]) {
-        				starts.clear();
+        				starts = new ArrayList<>();
         				max = data[i][j];
         			}
         			if(max == data[i][j]) {
