@@ -3,21 +3,7 @@ import java.util.*;
   
 public class Main {  
 	static StringBuilder sb = new StringBuilder();
-	static int[][] next;
-	
-	static void dfs(int from, int to, List<Integer> result) {		
-		if(from == to) {
-			
-			return ;
-		}
-		
-		if(next[from][to] == -1) return;
-		
-		result.add(from);
-		dfs(next[from][to], to, result);
-		
-	}
-	
+	static int[][] next;	
 	
     public static void main(String[] args) throws IOException {  
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -77,14 +63,19 @@ public class Main {
         
         for(int i=1;i<=n;i++) {
         	for(int j=1;j<=n;j++) {
-        		if(data[i][j] == INF || next[i][j] == -1 || i == j) {
+        		if(next[i][j] == -1) {
         	            sb.append("0\n");
         	            continue;
         	    }
         		
         		List<Integer> result = new ArrayList<>();
-        		dfs(i, j, result);
-        		result.add(j);
+        		int cur = i;
+        		while (cur != -1) {
+        		    result.add(cur);
+        		    cur = next[cur][j];
+        		}
+
+
 
 
         		sb.append(result.size()).append(" ");
