@@ -68,30 +68,30 @@ public class Main {
         }//각 집합 i에 대해 인원 수, candy 수 저장
         
         
-//        int[] dp = new int[k];
-//        for (int i = 0; i < n; i++) {
-//            if (groupSize[i] == 0) continue;
-//            
-//            for (int j = k - 1; j >= groupSize[i]; j--) {
-//                dp[j] = Math.max(dp[j], dp[j - groupSize[i]] + groupCandy[i]);
-//            }
-//        }
-        
-        int[][] dp = new int[n+1][k];
+        int[] dp = new int[k];
         for (int i = 0; i < n; i++) {
-        	for (int j = 0; j < k; j++) {
-
-        		dp[i+1][j] = Math.max(dp[i+1][j], dp[i][j]);
-
-        		if (j + groupSize[i] < k) {
-                 dp[i+1][j + groupSize[i]] = Math.max(dp[i+1][j + groupSize[i]], dp[i][j] + groupCandy[i]);
-        		}
-        	}
+            if (groupSize[i] == 0) continue;
+            
+            for (int j = k - 1; j >= groupSize[i]; j--) {
+                dp[j] = Math.max(dp[j], dp[j - groupSize[i]] + groupCandy[i]);
+            }
         }
+        
+//        int[][] dp = new int[n+1][k];
+//        for (int i = 0; i < n; i++) {
+//        	for (int j = 0; j < k; j++) {
+//
+//        		dp[i+1][j] = Math.max(dp[i+1][j], dp[i][j]);
+//
+//        		if (j + groupSize[i] < k) {
+//                 dp[i+1][j + groupSize[i]] = Math.max(dp[i+1][j + groupSize[i]], dp[i][j] + groupCandy[i]);
+//        		}
+//        	}
+//        }
 
         
         
-        System.out.println(dp[n][k-1]);
-
+//        System.out.println(dp[n][k-1]);
+        System.out.println(dp[k-1]);
     }
 }
