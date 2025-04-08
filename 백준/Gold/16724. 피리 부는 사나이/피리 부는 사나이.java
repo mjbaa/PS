@@ -2,81 +2,67 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-	static int[][][] parent;
-	
-	static int[] find(int[] a) {
-		if(Arrays.equals(parent[a[0]][a[1]], a)) return a;
-		
-		return parent[a[0]][a[1]] = find(parent[a[0]][a[1]]);
-	}
-	
-	static boolean union(int[] a, int[] b) {
-		int[] aRoot = find(a);
-		int[] bRoot = find(b);
-		
-		if(Arrays.equals(aRoot,bRoot)) return false;
-		
-		parent[bRoot[0]][bRoot[1]] = aRoot;
-		return true;
-	}
-	
+    static int[] parent;
+    static int n, m;
+    static char[][] data;
+    
+    static int find(int x) {
+        if (parent[x] == x) return x;
+        return parent[x] = find(parent[x]);
+    }
+    
+    static void union(int x, int y) {
+        int rootX = find(x);
+        int rootY = find(y);
+        if (rootX != rootY) {
+            parent[rootY] = rootX;
+        }
+    }
+    
+    static int getNext(int idx) {
+        int x = idx / m;
+        int y = idx % m;
+        char dir = data[x][y];
+        
+        switch(dir) {
+            case 'U': return (x-1) * m + y;
+            case 'D': return (x+1) * m + y;
+            case 'L': return x * m + (y-1);
+            case 'R': return x * m + (y+1);
+        }
+        return -1;
+    }
+
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int n = Integer.parseInt(st.nextToken());
-        int m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
         
-        parent = new int[n][m][2]; // n,m에 대해 부모의 좌표 저장
-        for(int i=0;i<n;i++) {
-        	for(int j=0;j<m;j++) {
-        		parent[i][j] = new int[] {i,j};
-        	}
+        parent = new int[n * m];
+        data = new char[n][m];
+        
+        for (int i = 0; i < n * m; i++) {
+            parent[i] = i;
         }
         
-        char[][] data = new char[n][m];
-        for(int i=0;i<n;i++) {
-        	String line = br.readLine();
-        	for(int j=0;j<m;j++) {
-        		data[i][j] = line.charAt(j);
-        	}
-        }
-        
-        for(int i=0;i<n;i++) {
-        	for(int j=0;j<m;j++) {
-        		int[] next = new int[] {i,j};
-        		switch(data[i][j]){
-        			case'U': 
-        				next[0] = i-1;
-        				break;
-        			case'D':	
-        				next[0] = i+1;
-        				break;
-        			case'L':	
-        				next[1] = j-1;
-        				break;
-        			case'R':	
-        				next[1] = j+1;
-        				break;
-        		}
-        		union(new int[] {i,j}, next);
-        	}
-        }
-        
-        for(int i=0;i<n;i++) {
-        	for(int j=0;j<m;j++) {
-        		find(new int[] {i,j});
-        	}
-        }
-        
-        Set<String> roots = new HashSet<>();
-        for(int i=0;i<n;i++) {
-            for(int j=0;j<m;j++) {
-                int[] root = find(new int[] {i,j});
-                roots.add(root[0] + "," + root[1]);
+        for (int i = 0; i < n; i++) {
+            String line = br.readLine();
+            for (int j = 0; j < m; j++) {
+                data[i][j] = line.charAt(j);
             }
         }
+        
+        for (int i = 0; i < n * m; i++) {
+            int next = getNext(i);
+            union(i, next);
+        }
+        
+        Set<Integer> roots = new HashSet<>();
+        for (int i = 0; i < n * m; i++) {
+            roots.add(find(i));
+        }
+        
         System.out.println(roots.size());
-
-    
     }
 }
