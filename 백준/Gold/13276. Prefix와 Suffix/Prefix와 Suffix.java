@@ -81,14 +81,14 @@ public class Main {
         			if (sub.startsWith(new String(pA)) && sub.endsWith(new String(pB))) {
         			    set.add(sub);
         			}
-//        			set.add(t.substring(a,b+Blen));
+
         		}
         	}
         }
         
-//        for(String str : set) {
-//        	System.out.println(str);
-//        }
+
+        
+
         
         System.out.println(set.size());
 
