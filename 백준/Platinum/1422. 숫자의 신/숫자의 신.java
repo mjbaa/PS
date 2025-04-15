@@ -58,7 +58,7 @@ public class Main {
         }
         
         if(allZero) System.out.println(0);
-        else System.out.println(sb.toString().replaceAll("^0+", ""));
+        else System.out.println(sb);
         
         
     }
