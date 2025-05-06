@@ -24,6 +24,10 @@ public class Main {
             dist[s][d] = Math.min(dist[s][d],w);
         }
 
+//        for (int i = 1; i <= v; i++) {
+//            dist[i][i] = 0;
+//        }
+
         for(int k=1;k<=v;k++){
             for(int i=1;i<=v;i++){
                 for(int j=1;j<=v;j++){
@@ -35,11 +39,11 @@ public class Main {
         }
 
         int min = Integer.MAX_VALUE;
-        for(int i=1;i<=v;i++){
-            for(int j=1;j<=v;j++){
-                min = Math.min(min,dist[i][j] + dist[j][i]);
-            }
+
+        for (int i = 1; i <= v; i++) {
+            min = Math.min(min, dist[i][i]);
         }
+
         if(min >= INF) System.out.println(-1);
         else System.out.println(min);
 
