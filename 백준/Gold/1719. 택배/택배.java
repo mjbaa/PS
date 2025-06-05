@@ -36,14 +36,11 @@ public class Main {
                     dist[next.no] = dist[cur.no] + next.weight;
                     if(cur.first == 0){ // 바로 두번째 도착한 노드임
                         pq.offer(new Node(next.no, dist[next.no], next.no));
-//                        if(result[start][next.no]==0){
-                            result[start][next.no] = next.no;
-//                        }
+                        result[start][next.no] = next.no;
+
                     }else{
                         pq.offer(new Node(next.no, dist[next.no], cur.first));
-//                        if(result[start][next.no]==0){
-                            result[start][next.no] = cur.first;
-//                        }
+                        result[start][next.no] = cur.first;
                     }
 
                 }
