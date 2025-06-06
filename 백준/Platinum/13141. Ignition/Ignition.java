@@ -13,7 +13,6 @@ public class Main {
 
     static int n,m;
     static int[][] dist;
-    static int[] distMax;
     static List<Edge> edges = new ArrayList<>();
     static int INF = Integer.MAX_VALUE / 2;
 
@@ -31,9 +30,6 @@ public class Main {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
-
-        distMax = new int[n+1];
-
 
         dist = new int[n+1][n+1];
         for(int i = 1; i <= n; i++){
@@ -79,7 +75,7 @@ public class Main {
         }
 
         System.out.printf("%.1f\n", answer);
-        
+
 
     }
 }
