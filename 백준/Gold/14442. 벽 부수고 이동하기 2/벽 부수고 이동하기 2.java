@@ -1,79 +1,68 @@
 import java.util.*;
 import java.io.*;
 
-
 public class Main {
-	static int[][] data;
-	static int[][][] visited;
-	static int[] dx = {0,0,1,-1};
-	static int[] dy = {1,-1,0,0};
-    
-	static int bfs(int n, int m, int k) {
-		Queue<int[]> q = new LinkedList<>();
-    	
-    	q.add(new int[] {0,0,0});
-    	visited[0][0][0] = 1;
-    	
-    	while(!q.isEmpty()) {
-    		int[] cur = q.poll();
-    		int x = cur[0];
-    		int y = cur[1];
-    		int w = cur[2];
-    		if(x == n-1 && y == m-1) {
-				return visited[x][y][w];
-			}
-    		
-    		for(int i=0;i<4;i++) {
-    			int nx = x + dx[i];
-    			int ny = y + dy[i];
-    			
-    			if(nx<0 || ny < 0 || nx >= n|| ny >=m)continue;
-    			
-    			if(data[nx][ny]==0 && visited[nx][ny][w]==0) { // 길, 방문X
-    				visited[nx][ny][w] = visited[x][y][w] + 1;
-					q.add(new int[]{nx,ny,w});
-					continue;
-    			}
-    			
-    			if(data[nx][ny]==1 && w<k && visited[nx][ny][w+1]==0) {//길, 부수기 가능, 방문x
-    				visited[nx][ny][w+1] = visited[x][y][w] + 1;
-					q.add(new int[] {nx,ny,w+1});
-					continue;
-    			}
-    			
-    			
+    static int n,m,k;
+    static int[] dx = {0,0,1,-1};
+    static int[] dy = {1,-1,0,0};
+    static int[][][] dist;
+    static int[][] data;
 
-    		}
-    		
-    	}
-    	
-    	return -1;
-	}
-	
-    public static void main(String[] args) throws IOException{
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	StringTokenizer st = new StringTokenizer(br.readLine());
-    	int n = Integer.parseInt(st.nextToken());
-    	int m = Integer.parseInt(st.nextToken());
-    	int k = Integer.parseInt(st.nextToken());
-    	
-    	data = new int[n][m];
-    	visited = new int[n][m][k+1];
-    	
-    	for(int i=0;i<n;i++) {
-    		String line = br.readLine();
-    		for(int j=0;j<m;j++) {
-    			data[i][j] = line.charAt(j) - '0';
-    		}
-    	}
-    	
-    	
-    	if (n == 1 && m == 1) {
-			System.out.println(1);
-			return;
-		}
 
-    	System.out.println(bfs(n,m,k));
-    
+    static void bfs(){
+        Deque<int[]> dq = new ArrayDeque<>();
+        dq.offer(new int[]{0,0,0});
+        dist[0][0][0] = 1;
+        while(!dq.isEmpty()){
+            int[] cur = dq.poll();
+            int x = cur[0];
+            int y = cur[1];
+            int z = cur[2];
+            for(int i=0;i<4;i++){
+                int nx = x+dx[i];
+                int ny = y+dy[i];
+
+                if(nx < 0 || ny < 0 || nx >= n || ny >=m) continue;
+                if(data[nx][ny] == 0){
+                    if(dist[nx][ny][z] != 0) continue;
+                    dist[nx][ny][z] = dist[x][y][z] + 1;
+                    dq.offer(new int[]{nx,ny,z});
+                }else{//벽
+                    if(z < k){
+                        if(dist[nx][ny][z+1] != 0) continue;
+                        dist[nx][ny][z+1] = dist[x][y][z] + 1;
+                        dq.offer(new int[]{nx,ny,z+1});
+                    }
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        n = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        k = Integer.parseInt(st.nextToken());
+        dist = new int[n][m][k+1];
+        data = new int[n][m];
+        for(int i=0;i<n;i++){
+            String line = br.readLine();
+            for(int j=0;j<m;j++){
+                data[i][j] = Integer.parseInt(line.charAt(j)+"");
+            }
+        }
+
+        bfs();
+
+        int min = Integer.MAX_VALUE;
+        for(int i=0;i<=k;i++){
+            int value = dist[n-1][m-1][i];
+            if(value == 0) continue;
+            min = Math.min(min,value);
+        }
+
+        if(min == Integer.MAX_VALUE) System.out.println(-1);
+        else System.out.println(min);
     }
 }
