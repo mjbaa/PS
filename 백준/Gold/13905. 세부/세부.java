@@ -60,15 +60,13 @@ public class Main {
 
         Collections.sort(edges);
 
-        int min = Integer.MAX_VALUE;
 
 
         for(Edge edge : edges){
             if(union(edge.a,edge.b)){
-                min = Math.min(min,edge.weight);
-
+                
                 if(find(s) == find(e)) {
-                    System.out.println(min);
+                    System.out.println(edge.weight);
                     return;
                 }
             }
@@ -76,7 +74,6 @@ public class Main {
 
         System.out.println(0);
 
-//        System.out.println(min);
 
     }
 }
