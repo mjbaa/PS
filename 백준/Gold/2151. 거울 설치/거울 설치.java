@@ -33,7 +33,7 @@ public class Main {
             if (!notRange(nx, ny) && data[nx][ny] != '*') {
                 if (dist[nx][ny][dir] > dist[x][y][dir]) {
                     dist[nx][ny][dir] = dist[x][y][dir];
-                    dq.addFirst(new int[]{nx, ny, dir});
+                    dq.add(new int[]{nx, ny, dir});
                 }
             }
 
@@ -44,7 +44,7 @@ public class Main {
                     if (notRange(nx, ny) || data[nx][ny] == '*') continue;
                     if (dist[nx][ny][d] > dist[x][y][dir] + 1) {
                         dist[nx][ny][d] = dist[x][y][dir] + 1;
-                        dq.addLast(new int[]{nx, ny, d});
+                        dq.add(new int[]{nx, ny, d});
                     }
                 }
             }
