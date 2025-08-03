@@ -44,7 +44,7 @@ public class Main {
             countries.add(new Country(id,g,s,v));
         }
 
-        Collections.sort(countries);
+        Collections.sort(countries, Collections.reverseOrder());
 
         int idx = 0;
         for(int i=0;i<n;i++){
