@@ -3,11 +3,11 @@ import java.util.*;
 
 public class Main {
     static int n;
-    static List<Integer>[] graph;
     static int[] parent;
+    static List<int[]> edges = new ArrayList<>();
 
     static int find(int x){
-        if(x == parent[x]) return x;
+        if(x==parent[x]) return x;
 
         return parent[x] = find(parent[x]);
     }
@@ -18,23 +18,18 @@ public class Main {
 
         if(aRoot == bRoot) return false;
 
-        parent[bRoot] = aRoot;
-        return true;
+        parent[aRoot] = bRoot;
 
+        return true;
     }
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
-        n = Integer.parseInt(br.readLine());
 
+        n = Integer.parseInt(br.readLine());
         parent = new int[n+1];
         for(int i=1;i<=n;i++){
-            parent[i]=i;
-        }
-
-        graph = new List[n+1];
-        for(int i = 1; i <= n; i++){
-            graph[i] = new LinkedList<>();
+            parent[i] = i;
         }
 
 
@@ -42,22 +37,26 @@ public class Main {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            graph[a].add(b);
-            graph[b].add(a);
+            edges.add(new int[]{a,b});
         }
 
-        for(int i=1;i<=n;i++){
-            List<Integer> friends = graph[i];
-            for(int friend : friends){
-                union(i,friend);
-            }
+        for(int[] edge : edges){
+            union(edge[0],edge[1]);
         }
 
+        int result = -1;
         for(int i=2;i<=n;i++){
-            if(union(1,i)){
-                System.out.println(1 + " " + i);
+            if(union(1,i)) {
+                result = i;
                 break;
             }
         }
+
+
+        System.out.println(1 + " " + result);
     }
+
+
+
+
 }
