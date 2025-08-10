@@ -2,63 +2,64 @@ import java.io.*;
 import java.util.*;
 
 class Solution {
-    static int n,m;
-    static int[][] data;
-    static int[] result;
-    static boolean[][] visited;
-    static int[] dx = {0,0,1,-1};
-    static int[] dy = {1,-1,0,0};
+    int[][] data;
+    int n,m;
+    boolean[][] visited;
+    int[] dx = {0,0,1,-1};
+    int[] dy = {1,-1,0,0};
+    int[] result;
     
-    void bfs(int sx, int sy){
+    void dfs(int sx,int sy){
         Deque<int[]> dq = new ArrayDeque<>();
-        Set<Integer> set = new HashSet<>();
+        Set<Integer> ySet = new HashSet<>();
+        ySet.add(sy);
         dq.offer(new int[] {sx,sy});
-        int cnt = 1;
         visited[sx][sy] = true;
-        set.add(sy);
+        
+        int cnt = 1;
         
         while(!dq.isEmpty()){
             int[] cur = dq.poll();
+            int x = cur[0];
+            int y = cur[1];
             
-            for(int f=0;f<4;f++){
-                int nx = cur[0] + dx[f];
-                int ny = cur[1] + dy[f];
-                
-                if(nx < 0 || ny < 0 || nx >=n || ny >= m ) continue;
+            for(int i=0;i<4;i++){
+                int nx = x + dx[i];
+                int ny = y + dy[i];
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                if(data[nx][ny] != 1 ) continue;
                 if(visited[nx][ny]) continue;
-                if(data[nx][ny] == 0) continue;
                 
-                dq.offer(new int[] {nx,ny});
-                cnt++;
                 visited[nx][ny] = true;
-                set.add(ny);
+                dq.offer(new int[] {nx,ny});
+                ySet.add(ny);
+                cnt++;
             }
+            
         }
         
-        for(int y : set){
+        for(int y : ySet){
             result[y] += cnt;
         }
-        
     }
-    
     public int solution(int[][] land) {
-        n = land.length;
-        m = land[0].length;
         data = land;
+        n = data.length;
+        m = data[0].length;
         result = new int[m];
-        visited = new boolean[n][m];
         
+        visited = new boolean[n][m];
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
                 if(data[i][j] == 1 && !visited[i][j]){
-                    bfs(i,j);
+                    dfs(i,j);
                 }
             }
         }
         
         int max = 0;
-        for(int val : result){
-            max = Math.max(val,max);
+        for(int i=0;i<m;i++){
+            max = Math.max(max, result[i]);
         }
         int answer = max;
         return answer;
