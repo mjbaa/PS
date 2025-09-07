@@ -1,3 +1,3 @@
-select FLAVOR
-from first_half
-order by total_order desc, shipment_id
+SELECt FLAVOR
+FROM first_half
+ORDER BY total_order DESC, shipment_id
