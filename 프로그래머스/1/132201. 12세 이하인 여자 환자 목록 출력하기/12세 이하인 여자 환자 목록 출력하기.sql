@@ -1,5 +1,4 @@
-select pt_name, pt_no, gend_cd, age, ifnull(tlno, 'NONE') as TLNO
-from patient
-where age <= 12
-    and gend_cd = 'W'
-order by age desc, pt_name
+SELECT PT_NAME, PT_NO, GEND_CD, AGE, ifnull(TLNO, 'NONE') as TLNO
+FROM PATIENT
+WHERE AGE <= 12 and GEND_CD = 'W'
+ORDER BY AGE DESC, PT_NAME
