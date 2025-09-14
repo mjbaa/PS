@@ -1,0 +1,6 @@
+SELECT member_id, member_name, gender, date_format(date_of_birth, "%Y-%m-%d") as DATE_OF_BIRTH
+FROM member_profile
+WHERE month(date_of_birth) = 3
+    and gender = 'W'
+    and tlno is not null
+ORDER BY member_id
