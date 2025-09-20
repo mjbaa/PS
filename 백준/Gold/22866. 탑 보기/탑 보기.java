@@ -13,7 +13,7 @@ public class Main {
 
         for(int i=1; i<=N; i++){
             h[i] = Integer.parseInt(st.nextToken());
-            near[i] = -100_000;
+            near[i] = -100000;
         }
 
         stack = new Stack<>();
