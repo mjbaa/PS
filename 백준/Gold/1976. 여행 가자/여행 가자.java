@@ -2,27 +2,33 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+
     static int n,m;
+    static List<Integer>[] graph;
+
     static int[] parent;
 
-    static int find(int a){
-        if(a == parent[a]) return a;
+    static int find(int x){
+        if(x == parent[x]) return x;
 
-        return parent[a] = find(parent[a]);
+        return parent[x] = find(parent[x]);
     }
 
-    static boolean union(int a, int b){
+    static void union(int a, int b){
         int aRoot = find(a);
         int bRoot = find(b);
 
-        if(aRoot == bRoot) return false;
+        if(aRoot == bRoot) return;
 
-        parent[bRoot] = aRoot;
-        return true;
+        parent[aRoot] = bRoot;
     }
 
     static boolean isConnected(int a, int b){
-        return find(a) == find(b);
+        int aRoot = find(a);
+        int bRoot = find(b);
+
+        if(aRoot == bRoot) return true;
+        else return false;
     }
 
     public static void main(String[] args) throws IOException {
@@ -36,30 +42,34 @@ public class Main {
             parent[i] = i;
         }
 
+        graph = new List[n+1];
+        for(int i=1;i<=n;i++){
+            graph[i] = new ArrayList<>();
+        }
+
         for(int i=1;i<=n;i++){
             st = new StringTokenizer(br.readLine());
             for(int j=1;j<=n;j++){
                 int val = Integer.parseInt(st.nextToken());
-                if(val == 1){
-                    union(i,j);
-                }
+                if(val == 1) union(i,j);
             }
         }
 
-        st = new StringTokenizer(br.readLine());
 
-        boolean allConnected = true;
-        int pre = Integer.parseInt(st.nextToken());
-        while(st.hasMoreTokens()){
-            int cur = Integer.parseInt(st.nextToken());
-            if(!isConnected(pre,cur)){
-                allConnected = false;
+        st = new StringTokenizer(br.readLine());
+        boolean flag = true;
+        int first = Integer.parseInt(st.nextToken());
+        for(int i=1;i<m;i++){
+            int val = Integer.parseInt(st.nextToken());
+            if(!isConnected(first,val)){
+                flag = false;
                 break;
             }
         }
 
-        if(allConnected) System.out.println("YES");
+        if(flag) System.out.println("YES");
         else System.out.println("NO");
+
 
 
     }
