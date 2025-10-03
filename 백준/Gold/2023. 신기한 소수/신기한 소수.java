@@ -1,44 +1,46 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
+
+public class Main {
+    static int n;
+    static StringBuilder sb = new StringBuilder();
+    static int[] data = {1,2,3,5,7,9};
 
 
-class Main {
-	static int N;
-	static int[] firstDigit = {2,3,5,7};
-	static int[] nextDigit = {1,3,5,7,9};
-	
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        N = Integer.parseInt(br.readLine());
+    static boolean isPrime(int x){
+        if(x < 2) return false;
 
-
-        for (int digit : firstDigit) {
-            findPrime(digit, 1); 
+        for(int i=2;i * i <= x; i++){
+            if(x % i == 0) return false;
         }
+        return true;
     }
 
+    static void dfs(int cnt, int cur){
 
-    static void findPrime(int num, int length) {
-        if (length == N) { 
-            System.out.println(num);
+        if(cnt == n){
+            sb.append(cur).append('\n');
             return;
         }
 
-
-        for (int next : nextDigit) {
-            int newNum = num * 10 + next;
-            if (isPrime(newNum)) {
-                findPrime(newNum, length + 1); 
+        for(int d : data){
+            int next = 10*cur + d;
+            if(isPrime(next)){
+                dfs(cnt+1, next);
             }
         }
     }
 
+    public static void main(String[] ags) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
 
-    static boolean isPrime(int num) {
-        if (num < 2) return false;
-        for (int i = 2; i * i <= num; i++) {
-            if (num % i == 0) return false;
-        }
-        return true;
+
+
+        dfs(0,0);
+
+        System.out.println(sb);
+
     }
+
 }
