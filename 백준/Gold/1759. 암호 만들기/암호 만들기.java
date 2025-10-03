@@ -1,76 +1,61 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
+public class Main {
+    static int L,C;
+    static List<String> data;
+    static StringBuilder sb = new StringBuilder();
+    static boolean[] selected;
 
-class Main {
-	static int L;
-	static int C;
-	
-	static char[] data;
-	
-	static boolean[] visited;
-	
-	static boolean isVow(char x) {
-		switch (x) {
-			case 'a':
-			case 'e':
-			case 'i':
-			case 'o':
-			case 'u':
-				return true;
-			default:
-				return false;
-					
-		}
-	}
-	
-	static void bt(int sidx, int cnt) {
-		if(cnt == L) {
-			StringBuilder sb = new StringBuilder();
-			int v=0 , c=0;
-			for(int i=0;i<C;i++) {
-				if(visited[i]) {
-					sb.append(data[i]);
-					if(isVow(data[i])) {
-						v++;
-					}else {
-						c++;
-					}
-				}
-			}
-			if(v >= 1 && c >=2) System.out.println(sb.toString());
-			return;
-		}
-		
-		for(int i=sidx;i<C;i++) {
-			visited[i] = true;
-			bt(i+1,cnt+1);
-			visited[i] = false;
-		}
-	}
-	
-    public static void main(String[] args) throws IOException {
-    	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    	StringTokenizer st = new StringTokenizer(br.readLine());
-    	
-    	L = Integer.parseInt(st.nextToken());
-    	C = Integer.parseInt(st.nextToken());
-    	
-    	st = new StringTokenizer(br.readLine());
-    	
-    	data = new char[C];
-    	visited = new boolean[C];
-    	
-    	for(int i=0;i<C;i++) {
-    		data[i] =  st.nextToken().charAt(0);
-    	}
-    	
-    	Arrays.sort(data);
-    	
-    	bt(0,0);
-    	
-
-
-    	
+    static boolean isVowel(String c) {
+        return (c.equals("a") || c.equals("e") || c.equals("i") || c.equals("o") ||  c.equals("u") );
     }
+
+
+    static void dfs(int idx, int cnt, int vcnt) {
+        if (cnt + (C - idx) < L) return;
+
+        if (cnt == L) {
+            if (vcnt >= 1 && (cnt - vcnt) >= 2) {
+                StringBuilder sb1 = new StringBuilder();
+                for (int i = 0; i < C; i++) if (selected[i]) sb1.append(data.get(i));
+                sb.append(sb1).append('\n');
+            }
+            return;
+        }
+
+        if (idx == C) return;
+
+        String val = data.get(idx);
+
+        selected[idx] = true;
+        dfs(idx + 1, cnt + 1, vcnt + (isVowel(val) ? 1 : 0));
+        selected[idx] = false;
+
+        dfs(idx + 1, cnt, vcnt);
+    }
+    
+    public static void main(String[] ags) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st = new StringTokenizer(br.readLine());
+        L = Integer.parseInt(st.nextToken());
+        C = Integer.parseInt(st.nextToken());
+
+        data = new ArrayList<>(C);
+        selected =  new boolean[C];
+
+        st =  new StringTokenizer(br.readLine());
+        for(int i=0;i<C;i++){
+            String val = st.nextToken();
+            data.add(val);
+        }
+
+        Collections.sort(data);
+
+        dfs(0,0,0);
+
+        System.out.println(sb);
+
+    }
+
 }
