@@ -1,80 +1,79 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int v , e;
+    static int k,e,v;
     static List<Integer>[] graph;
-    static int[] visited;
-    
-    static boolean binaryG = true;
-    
-    static boolean bfs(int idx) {
-    	Deque<Integer> dq = new ArrayDeque<>();
-    	dq.offer(idx);
-    	int val = 1;
-    	visited[idx] = val;
-    	
-    	while(!dq.isEmpty()) {
-    		int cur = dq.poll();
-    		for(int node : graph[cur]) {
-    			if(visited[node] == 0) {
-        			visited[node] = 3 - visited[cur]; 
-        			dq.offer(node);
-    			}else if (visited[node] == visited[cur]) {
-                    return false; // 충돌
-                }
-    			
+    static boolean[] visited;
+    static boolean[] colored;
+    static boolean flag;
 
-    		}
-    	}
-    	return true;
-    }
-    
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
-        StringTokenizer st;
-        int t = Integer.parseInt(br.readLine());
-        for(int tc = 0; tc<t;tc++) {
-        	binaryG = true;
-        	
-        	st = new StringTokenizer(br.readLine());
-        	int v = Integer.parseInt(st.nextToken());
-        	int e = Integer.parseInt(st.nextToken());
-        	graph = new List[v+1]; //1based
-        	visited = new int[v+1];
-        	
-        	for(int i=1;i<=v;i++) {
-        		graph[i] = new LinkedList<>();
-        	}
-        	
-        	for(int i=0;i<e;i++) {
-        		st = new StringTokenizer(br.readLine());
-        		int s = Integer.parseInt(st.nextToken());
-        		int d = Integer.parseInt(st.nextToken());
-        		
-        		graph[s].add(d);
-        		graph[d].add(s);
-        	}
-        	
-        	boolean flag = true;
-        	
-        	for(int i=1; i<=v; i++){
-                if(visited[i] == 0){ 
-                    if(!bfs(i)){ //충돌 발생
+    static void bfs(int sidx){
+        Deque<Integer> dq = new  ArrayDeque<>();
+        dq.offer(sidx);
+        colored[sidx] = true;
+        visited[sidx] = true;
+
+        loop : while(!dq.isEmpty()){
+            int cur = dq.poll();
+
+            for(int next : graph[cur]){
+                if(visited[next]){
+                    if(colored[next] == colored[cur]){
                         flag = false;
-                        break;
+                        break loop;
                     }
+                }else{
+                    visited[next] = true;
+                    colored[next] = !colored[cur];
+                    dq.offer(next);
                 }
             }
-            
-            if(flag) {
+        }
+    }
+
+    public static void main(String[] ags) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringTokenizer st;
+        StringBuilder sb = new StringBuilder();
+        k = Integer.parseInt(br.readLine());
+        for(int tc=1;tc<=k;tc++){
+            flag = true;
+
+            st = new StringTokenizer(br.readLine());
+            v = Integer.parseInt(st.nextToken());
+            e =  Integer.parseInt(st.nextToken());
+            visited = new boolean[v+1];
+            colored = new boolean[v+1];
+            graph = new List[v+1];
+            for(int i=1;i<=v;i++){
+                graph[i] = new ArrayList<>();
+            }
+
+            for(int i=0;i<e;i++){
+                st = new StringTokenizer(br.readLine());
+                int a = Integer.parseInt(st.nextToken());
+                int b = Integer.parseInt(st.nextToken());
+                graph[a].add(b);
+                graph[b].add(a);
+            }
+
+            for(int i=1;i<=v;i++){
+                if(!visited[i]){
+                    bfs(i);
+                }
+            }
+
+
+            if(flag){
                 sb.append("YES\n");
-            } else {
+            }else{
                 sb.append("NO\n");
             }
-        	
+
         }
         System.out.println(sb);
+
     }
+
 }
