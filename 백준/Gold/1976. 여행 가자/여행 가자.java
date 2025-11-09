@@ -1,12 +1,9 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class Main {
-
-    static int n,m;
-    static List<Integer>[] graph;
-
+class Main {
     static int[] parent;
+    static int n,m;
 
     static int find(int x){
         if(x == parent[x]) return x;
@@ -24,12 +21,9 @@ public class Main {
     }
 
     static boolean isConnected(int a, int b){
-        int aRoot = find(a);
-        int bRoot = find(b);
-
-        if(aRoot == bRoot) return true;
-        else return false;
+        return find(a) == find(b);
     }
+
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -42,35 +36,30 @@ public class Main {
             parent[i] = i;
         }
 
-        graph = new List[n+1];
-        for(int i=1;i<=n;i++){
-            graph[i] = new ArrayList<>();
-        }
-
-        for(int i=1;i<=n;i++){
+        for(int i = 1; i <= n; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j=1;j<=n;j++){
+            for(int j = 1; j <= n; j++){
                 int val = Integer.parseInt(st.nextToken());
-                if(val == 1) union(i,j);
+                if(val == 1) union(i, j);
             }
         }
-
 
         st = new StringTokenizer(br.readLine());
-        boolean flag = true;
-        int first = Integer.parseInt(st.nextToken());
+        int start = Integer.parseInt(st.nextToken());
+
         for(int i=1;i<m;i++){
-            int val = Integer.parseInt(st.nextToken());
-            if(!isConnected(first,val)){
-                flag = false;
-                break;
+            int next = Integer.parseInt(st.nextToken());
+            if(!isConnected(start, next)) {
+                System.out.println("NO");
+                return;
             }
         }
 
-        if(flag) System.out.println("YES");
-        else System.out.println("NO");
 
+
+        System.out.println("YES");
 
 
     }
 }
+
