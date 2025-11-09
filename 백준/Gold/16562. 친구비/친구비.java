@@ -1,33 +1,36 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
-public class Main {
-    static int n,m,k;
-    static int[] cost;
+class Main {
     static int[] parent;
-    static List<Integer>[] graph;
+    static int n,m,k;
+    static int[] price;
 
     static int find(int x){
         if(x == parent[x]) return x;
-        else return parent[x] = find(parent[x]);
+
+        return parent[x] = find(parent[x]);
     }
 
-    static boolean union(int a, int b){
+    static void union(int a, int b){
         int aRoot = find(a);
         int bRoot = find(b);
 
-        if(aRoot == bRoot) return false;
+        if(aRoot == bRoot) return;
 
-        if(cost[aRoot] < cost[bRoot]){
+        if(price[aRoot] < price[bRoot]){
             parent[bRoot] = aRoot;
         }else{
             parent[aRoot] = bRoot;
         }
-
-        return true;
     }
 
-    public static void main(String[] args) throws Exception {
+    static boolean isConnected(int a, int b){
+        return find(a) == find(b);
+    }
+
+
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
@@ -36,41 +39,30 @@ public class Main {
 
         parent = new int[n+1];
         for(int i=1;i<=n;i++){
-            parent[i]=i;
+            parent[i] = i;
         }
 
-        cost = new int[n+1];
+        price = new int[n+1];
         st = new StringTokenizer(br.readLine());
-        for (int i = 1; i <= n; i++) {
-            cost[i] = Integer.parseInt(st.nextToken());
+        for(int i=1;i<=n;i++){
+            price[i] = Integer.parseInt(st.nextToken());
         }
 
-        graph = new List[n+1];
-        for(int i=1;i<=n;i++){
-            graph[i] = new ArrayList<>();
-        }
-        for(int i=0;i<m;i++){
+        for(int i=1;i<=m;i++){
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            graph[a].add(b);
-            graph[b].add(a);
-        }
-
-        for(int i= 1; i<=n;i++){
-            for(int friend : graph[i]){
-                union(friend,i);
-            }
+            union(a,b);
         }
 
         Set<Integer> set = new HashSet<>();
-        for(int i=1;i<=n;i++){
-            set.add(find(i));
-        }
-
         int sum = 0;
-        for(int p : set){
-            sum += cost[p];
+        for(int i=1;i<=n;i++){
+            int parent = find(i);
+            if(!set.contains(parent)){
+                set.add(parent);
+                sum += price[parent];
+            }
         }
 
         if(sum > k){
@@ -80,5 +72,7 @@ public class Main {
         }
 
 
+
     }
 }
+
