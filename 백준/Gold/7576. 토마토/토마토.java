@@ -1,78 +1,66 @@
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 
 public class Main {
-    public static int N;
-    public static int M;
-    public static int[][] box;
+    static int n, m;
+    static int[][] data;
+    static int[] dx = {1, -1, 0, 0};
+    static int[] dy = {0, 0, 1, -1};
 
-    public static int[] dx = {1, -1, 0, 0};
-    public static int[] dy = {0, 0, 1, -1};
-
-    public static Queue<int[]> queue = new LinkedList<>();
-
-
-
-    public static void main(String[] args) throws IOException {
-
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
 
-        M = Integer.parseInt(st.nextToken());
-        N = Integer.parseInt(st.nextToken());
+        m = Integer.parseInt(st.nextToken());
+        n = Integer.parseInt(st.nextToken());
 
-        box = new int[N][M];
-        for (int i = 0; i < N; i++) {
-            st = new StringTokenizer(br.readLine(), " ");
-            for (int j = 0; j < M; j++) {
-                box[i][j] = Integer.parseInt(st.nextToken());
-                if(box[i][j] == 1){
-                    queue.offer(new int[] {i,j,0});
-                }
+        data = new int[n][m];
+        Queue<int[]> q = new ArrayDeque<>();
 
-            }
-        }
+        int maxCnt = 0;
+        int cnt = 0;
+        int days = 0;
 
-        bfs();
-    }
+        for (int i = 0; i < n; i++) {
+            st = new StringTokenizer(br.readLine());
+            for (int j = 0; j < m; j++) {
+                int val = Integer.parseInt(st.nextToken());
+                data[i][j] = val;
 
-    public static void bfs() {
-        int day = 0;
-
-        while(!queue.isEmpty()) {
-            int[] t = queue.poll();
-            day = t[2];
-
-            for(int i=0; i<4; i++) {
-                int nx = t[0] + dx[i];
-                int ny = t[1] + dy[i];
-
-                if(0 <= nx && nx <N && 0<= ny && ny <M) {
-                    if(box[nx][ny] == 0) {
-                        box[nx][ny] = 1;
-                        queue.add(new int[] {nx, ny, day+1});
-                    }
+                if (val != -1) maxCnt++;
+                if (val == 1) {
+                    cnt++;
+                    q.offer(new int[]{i, j, 0});
                 }
             }
         }
 
-        if(checkTomato()){
-            System.out.println(day);
-        } else{
-            System.out.println(-1);
+        if (cnt == maxCnt) {
+            System.out.println(0);
+            return;
         }
 
-    }
+        while (!q.isEmpty()) {
+            int[] cur = q.poll();
+            int x = cur[0];
+            int y = cur[1];
+            int d = cur[2];
+            days = Math.max(days, d);
 
-    static boolean checkTomato() {
-        for(int i=0; i<N; i++) {
-            for(int j=0; j<M; j++) {
-                if(box[i][j] == 0)
-                    return false;
+            for (int k = 0; k < 4; k++) {
+                int nx = x + dx[k];
+                int ny = y + dy[k];
+
+                if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                if (data[nx][ny] != 0) continue;
+
+                data[nx][ny] = 1;
+                cnt++;
+                q.offer(new int[]{nx, ny, d + 1});
             }
         }
-        return true;
-    }
 
+        if (cnt == maxCnt) System.out.println(days);
+        else System.out.println(-1);
+    }
 }
