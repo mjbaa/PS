@@ -2,85 +2,85 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
+    static int n;
+    static char[][] data;
+    static int[] dx = {0,0,1,-1};
+    static int[] dy = {1,-1,0,0};
 
+    static boolean[][] visited;
 
-    public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        int N = Integer.parseInt(br.readLine());
-
-
-        char[][] data = new char[N][N];
-        boolean[][] visited = new boolean[N][N];
-        Queue<int[]> q = new LinkedList<>();
-
-        for(int i=0;i<N;i++){
-            data[i] = br.readLine().toCharArray();
-        }
-
-        int[] dx = {0,0,1,-1};
-        int[] dy = {1,-1,0,0};
-
-        int normal = 0;
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                if(!visited[i][j]){
-                    visited[i][j] = true;
-                    q.add(new int[]{i,j});
-                    normal++;
-                    while(!q.isEmpty()){
-                        int[] cur = q.poll();
-                        int curVal = data[cur[0]][cur[1]];
-
-                        for(int k=0;k<4;k++){
-                            int nx = cur[0] + dx[k];
-                            int ny = cur[1] + dy[k];
-                            if(nx>=0 && nx<N && ny>=0 && ny<N && !visited[nx][ny] && data[nx][ny] == curVal){
-                                q.add(new int[]{nx,ny});
-                                visited[nx][ny] = true;
-
-                            }
-                        }
-                    }
-                }
+    static void bfs(int sx,int sy, boolean disabled){
+        Set<Character> set = new HashSet<>();
+        set.add(data[sx][sy]);
+        if(data[sx][sy] == 'R' || data[sx][sy] == 'G'){
+            if(disabled) {
+                set.add('R');
+                set.add('G');
             }
         }
 
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                if(data[i][j] == 'G'){
-                    data[i][j] = 'R';
+
+        Deque<int[]> dq = new ArrayDeque<>();
+        dq.offer(new int[]{sx,sy});
+        visited[sx][sy] = true;
+
+        while(!dq.isEmpty()){
+            int[] cur = dq.poll();
+            int x = cur[0],y = cur[1];
+
+            for(int f = 0; f<4;f++){
+                int nx = x + dx[f];
+                int ny = y + dy[f];
+                if(nx < 0 || ny < 0 || nx >= n || ny >= n) continue;
+                if(visited[nx][ny]) continue;
+
+                if(set.contains(data[nx][ny])) {
+                    visited[nx][ny] = true;
+                    dq.offer(new int[]{nx,ny});
                 }
+
             }
         }
-
-        visited = new boolean[N][N];
-        q = new LinkedList<>();
-        int cnt=0;
-        for(int i=0;i<N;i++){
-            for(int j=0;j<N;j++){
-                if(!visited[i][j]){
-                    visited[i][j] = true;
-                    q.add(new int[]{i,j});
-                    cnt++;
-                    while(!q.isEmpty()){
-                        int[] cur = q.poll();
-                        int curVal = data[cur[0]][cur[1]];
-
-                        for(int k=0;k<4;k++){
-                            int nx = cur[0] + dx[k];
-                            int ny = cur[1] + dy[k];
-                            if(nx>=0 && nx<N && ny>=0 && ny<N && !visited[nx][ny] && data[nx][ny] == curVal){
-                                q.add(new int[]{nx,ny});
-                                visited[nx][ny] = true;
-
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        System.out.println(normal + " " +cnt);
 
     }
 
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        n = Integer.parseInt(br.readLine());
+        data = new char[n][n];
+
+        for(int i=0;i<n;i++){
+            String line = br.readLine();
+            for(int j=0;j<n;j++){
+                data[i][j] = line.charAt(j);
+            }
+        }
+
+        //StringBuilder sb = new StringBuilder();
+        visited = new boolean[n][n];
+        int cnt1 = 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(!visited[i][j]) {
+                    cnt1++;
+                    bfs(i,j,false);
+                }
+            }
+        }
+
+        visited = new boolean[n][n];
+        int cnt2 = 0;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(!visited[i][j]) {
+                    cnt2++;
+                    bfs(i,j,true);
+                }
+            }
+        }
+
+        System.out.println(cnt1+" "+cnt2);
+
+        //System.out.println(sb);
+    }
 }
