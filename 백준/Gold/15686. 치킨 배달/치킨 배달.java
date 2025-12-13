@@ -1,45 +1,43 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Main {
-    static int n, m;
-    static List<int[]> chickens = new ArrayList<>();
-    static List<int[]> houses = new ArrayList<>();
-    static boolean[] selected;
-    static int min = Integer.MAX_VALUE;
+    static int n,m;
+    static int[][] data;
+    static List<int[]> chicks;
+    static List<int[]> houses;
+    static boolean[] remains;
 
-    static int getTotal(){
+    static int result = Integer.MAX_VALUE;
+
+    static int find(){
         int sum = 0;
-
-        for(int[] house : houses){
+        for(int i=0;i<houses.size();i++){
             int min = Integer.MAX_VALUE;
-            for(int i=0;i<chickens.size();i++){
-                if(selected[i]){
-                    int len = Math.abs(chickens.get(i)[0] - house[0]) + Math.abs(chickens.get(i)[1] - house[1]);
-                    min = Math.min(min, len);
+            for(int j=0;j<chicks.size();j++){
+                if(remains[j]){
+                    min = Math.min(min, Math.abs(houses.get(i)[0] - chicks.get(j)[0]) + Math.abs(houses.get(i)[1] - chicks.get(j)[1]));
                 }
-
             }
             sum += min;
         }
 
         return sum;
     }
-
     static void dfs(int idx, int cnt){
+
         if (cnt == m) {
-            min = Math.min(min, getTotal());
+            result = Math.min(result, find());
             return;
         }
-        if (idx == chickens.size()) return;
+        if (idx == chicks.size()) return;
+        if(cnt + chicks.size() - idx < m) return;
+        
 
-        selected[idx] = true;
-        dfs(idx+1, cnt+1);
-        selected[idx] = false;
-
-        dfs(idx+1, cnt);
-
-
+        remains[idx] = true;
+        dfs(idx+1,cnt+1);
+        remains[idx] = false;
+        dfs(idx+1,cnt);
     }
 
     public static void main(String[] args) throws IOException {
@@ -48,23 +46,26 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
 
-
+        chicks = new ArrayList<>(m);
+        houses = new ArrayList<>(n);
+        data = new int[n][n];
         for(int i=0;i<n;i++){
             st = new StringTokenizer(br.readLine());
             for(int j=0;j<n;j++){
-                int value = Integer.parseInt(st.nextToken());
-                if(value == 1){
+                int val = Integer.parseInt(st.nextToken());
+                if(val == 1){
                     houses.add(new int[]{i,j});
-                }else if(value == 2){
-                    chickens.add(new int[]{i,j});
+                }else if(val == 2){
+                    chicks.add(new int[]{i,j});
                 }
+                data[i][j] = val;
             }
         }
-        selected = new boolean[chickens.size()];
 
+        remains = new boolean[chicks.size()];
         dfs(0,0);
 
-        System.out.println(min);
 
+        System.out.println(result);
     }
 }
