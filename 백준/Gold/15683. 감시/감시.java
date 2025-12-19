@@ -2,76 +2,78 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int n, m;
+    static int n,m;
     static int[][] data;
-    static List<int[]> cameras = new ArrayList<>();
-    static int[] dx = {-1, 1, 0, 0};
-    static int[] dy = {0, 0, -1, 1};
+
+    static int[] dx = {-1,1,0,0};
+    static int[] dy = {0,0,-1,1};
+    static List<int[]> cctvs = new ArrayList<>();
     static int min = Integer.MAX_VALUE;
 
-    static int count(int[][] arr) {
+
+    static int[][][] dirs = {
+            {},
+            {{0},{1},{2},{3}},
+            {{2,3},{0,1}},
+            {{0,3},{3,1},{1,2},{2,0}},
+            {{0,2,3},{0,1,3},{0,1,2},{1,2,3}},
+            {{0,1,2,3}}
+    };
+
+
+    static int check(){
         int cnt = 0;
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < m; j++)
-                if (arr[i][j] == 0) cnt++;
+        for(int i=0;i<n;i++){
+            for(int j=0;j<m;j++){
+                if(data[i][j] == 0) cnt++;
+            }
+        }
         return cnt;
     }
 
-    static boolean notRange(int x, int y) {
-        return x < 0 || y < 0 || x >= n || y >= m;
-    }
-
-    static void check(int x, int y, int[] dir, int[][] arr) {
-        for (int didx : dir) {
-            int nx = x + dx[didx];
-            int ny = y + dy[didx];
-            while (!notRange(nx, ny) && arr[nx][ny] != 6) {
-                if (arr[nx][ny] == 0) arr[nx][ny] = -1;
-                nx += dx[didx];
-                ny += dy[didx];
-            }
-        }
-    }
-
-    static int[][] copy(int[][] arr) {
-        int[][] temp = new int[n][m];
-        for (int i = 0; i < n; i++)
-            temp[i] = arr[i].clone();
-        return temp;
-    }
-
-    static void dfs(int idx, int[][] arr) {
-        if (idx == cameras.size()) {
-            min = Math.min(min, count(arr));
+    static void dfs(int idx){
+        if(idx == cctvs.size()){
+            min = Math.min(min,check());
             return;
         }
-        int[] cur = cameras.get(idx);
-        int val = data[cur[0]][cur[1]];
 
-        List<int[]> dirs = new ArrayList<>();
-        if (val == 1) {
-            for (int i = 0; i < 4; i++) dirs.add(new int[]{i});
-        } else if (val == 2) {
-            dirs.add(new int[]{0, 1});
-            dirs.add(new int[]{2, 3});
-        } else if (val == 3) {
-            dirs.add(new int[]{0, 3});
-            dirs.add(new int[]{3, 1});
-            dirs.add(new int[]{1, 2});
-            dirs.add(new int[]{2, 0});
-        } else if (val == 4) {
-            dirs.add(new int[]{0, 1, 3});
-            dirs.add(new int[]{0, 1, 2});
-            dirs.add(new int[]{1, 2, 3});
-            dirs.add(new int[]{0, 2, 3});
-        } else if (val == 5) {
-            dirs.add(new int[]{0, 1, 2, 3});
+        int[] cctv = cctvs.get(idx);
+        int x = cctv[0];
+        int y = cctv[1];
+        int type = cctv[2];
+
+        for(int[] dirSet : dirs[type]){
+            List<int[]> changed = set(dirSet,x,y);
+            dfs(idx+1);
+            revoke(changed);
         }
 
-        for (int[] dir : dirs) {
-            int[][] next = copy(arr);
-            check(cur[0], cur[1], dir, next);
-            dfs(idx + 1, next);
+    }
+
+    static List<int[]> set(int[] dirSet, int sx, int sy){
+        List<int[]> changed = new ArrayList<>();
+
+        for(int d : dirSet){
+            int val = 1;
+            while(true){
+                int nx = sx + dx[d]*val;
+                int ny = sy + dy[d]*val;
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m) break;
+                if(data[nx][ny] == 6) break;
+
+                if(data[nx][ny] == 0){
+                    data[nx][ny] = -1;
+                    changed.add(new int[]{nx, ny});
+                }
+                val++;
+            }
+        }
+        return changed;
+    }
+
+    static void revoke(List<int[]> changed){
+        for(int[] p : changed){
+            data[p[0]][p[1]] = 0;
         }
     }
 
@@ -81,18 +83,22 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         data = new int[n][m];
-        for (int i = 0; i < n; i++) {
+
+        for(int i=0;i<n;i++){
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < m; j++) {
+            for(int j=0;j<m;j++){
                 int val = Integer.parseInt(st.nextToken());
                 data[i][j] = val;
-                if (val != 0 && val != 6) {
-                    cameras.add(new int[]{i, j});
+                if(val != 0 && val!= 6){
+                    cctvs.add(new int[]{i,j,val});
                 }
             }
         }
 
-        dfs(0, data);
+        dfs(0);
+
         System.out.println(min);
     }
+
+
 }
