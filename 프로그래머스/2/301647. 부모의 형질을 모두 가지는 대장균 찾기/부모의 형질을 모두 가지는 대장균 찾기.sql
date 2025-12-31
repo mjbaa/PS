@@ -1,0 +1,6 @@
+-- 코드를 작성해주세요
+SELECT a.ID, a.GENOTYPE, b.GENOTYPE as PARENT_GENOTYPE
+FROM ECOLI_DATA as a
+    JOIN ECOLI_DATA as b on a.PARENT_ID = b.ID
+WHERE (a.GENOTYPE & b.GENOTYPE) = b.GENOTYPE
+order by a.ID
