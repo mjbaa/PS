@@ -2,20 +2,6 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class Node implements Comparable<Node> {
-        int x,y,weight, preidx;
-        Node(int x, int y, int weight, int preidx){
-            this.x = x;
-            this.y = y;
-            this.weight = weight;
-            this.preidx = preidx;
-        }
-
-        public int compareTo(Node o) {
-            return Integer.compare(this.weight, o.weight);
-        }
-    }
-
     static int n;
     static int[][] data; // 1 : 거울 설치 가능, 0 : 빈 칸, -1 : 벽
     static int[][][] dist;
@@ -28,51 +14,41 @@ public class Main {
         return (x<0||y<0||x>=n||y>=n);
     }
 
-    static void dijks(){
-        PriorityQueue<Node> pq = new PriorityQueue<>();
-        for(int f=0;f<4;f++){
-            pq.offer(new Node(sx,sy,0,f));
-            dist[sx][sy][f] = 0;
+    static void bfs(){
+        Deque<int[]> dq = new ArrayDeque<>();
+        for (int d = 0; d < 4; d++) {
+            dist[sx][sy][d] = 0;
+            dq.offer(new int[]{sx, sy, d});
         }
 
-        while(!pq.isEmpty()){
-            Node cur = pq.poll();
-            int x = cur.x;
-            int y = cur.y;
-            int weight = cur.weight;
-            int preidx = cur.preidx;
-            
-            if(dist[x][y][preidx] < weight) continue;
-            
-            boolean canMirror = false;
-            if(data[x][y] == 1) canMirror = true;
+        while (!dq.isEmpty()) {
+            int[] cur = dq.poll();
+            int x = cur[0];
+            int y = cur[1];
+            int dir = cur[2];
 
-            if(canMirror){
-                for(int f=0;f<4;f++){
-                    if((preidx+2)%4 == f) continue; // 역방향 불가능
-                    if(preidx == f) continue; // 순방향 제외
+            int nx = x + dx[cur[2]];
+            int ny = y + dy[cur[2]];
 
-                    int nx = x+dx[f];
-                    int ny = y+dy[f];
-                    if(notRange(nx,ny)) continue;
-                    if(data[nx][ny] == -1) continue;
-                    if(dist[nx][ny][f] > weight+1){
-                        dist[nx][ny][f] = weight+1;
-                        pq.offer(new Node(nx,ny,dist[nx][ny][f],f));
-                    }
+            if(!notRange(nx, ny) && data[nx][ny] != -1){
+                if(dist[nx][ny][dir] > dist[x][y][dir]){
+                    dist[nx][ny][dir] = dist[x][y][dir];
+                    dq.offer(new int[]{nx, ny,dir});
                 }
             }
 
-            //순방향 : 언제든 가능
-            int nx = x+dx[preidx];
-            int ny = y+dy[preidx];
-            if(notRange(nx,ny)) continue;
-            if(data[nx][ny] == -1) continue;
-            if(dist[nx][ny][preidx] > weight){
-                dist[nx][ny][preidx] = weight;
-                pq.offer(new Node(nx,ny,dist[nx][ny][preidx],preidx));
+            if(data[x][y] == 1){
+                for(int f=0;f<4;f++){
+                    if(dir == f || (dir+2)%4 == f) continue;
+                    nx = x + dx[f];
+                    ny = y + dy[f];
+                    if(notRange(nx, ny) || data[nx][ny] == -1) continue;
+                    if(dist[nx][ny][f] > dist[x][y][dir]+1){
+                        dist[nx][ny][f] = dist[x][y][dir]+1;
+                        dq.offer(new int[]{nx, ny,f});
+                    }
+                }
             }
-
 
         }
     }
@@ -103,18 +79,16 @@ public class Main {
         }
 
         dist = new int[n][n][4];
-        for(int i = 0; i < n; i++) {
-            for(int j = 0; j < n; j++) {
+        for (int i = 0; i < n; i++)
+            for (int j = 0; j < n; j++)
                 Arrays.fill(dist[i][j], Integer.MAX_VALUE);
-            }
-        }
 
-        dijks();
+        bfs();
 
-        int min = Integer.MAX_VALUE;
+        int result = Integer.MAX_VALUE;
         for(int f=0;f<4;f++){
-            min = Math.min(min,dist[tx][ty][f]);
+            result = Math.min(result, dist[tx][ty][f]);
         }
-        System.out.println(min);
+        System.out.println(result);
     }
 }
