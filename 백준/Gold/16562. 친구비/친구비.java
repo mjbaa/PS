@@ -1,10 +1,11 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
-class Main {
-    static int[] parent;
+public class Main {
     static int n,m,k;
-    static int[] price;
+    static int[] parent;
+    static int[] cost;
+    static int sum = 0;
 
     static int find(int x){
         if(x == parent[x]) return x;
@@ -18,19 +19,19 @@ class Main {
 
         if(aRoot == bRoot) return;
 
-        if(price[aRoot] < price[bRoot]){
+        if(cost[aRoot] < cost[bRoot]){ // 적은게 부모
             parent[bRoot] = aRoot;
+
         }else{
             parent[aRoot] = bRoot;
         }
     }
 
-    static boolean isConnected(int a, int b){
+    static boolean isFriend(int a, int b){
         return find(a) == find(b);
     }
 
-
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         n = Integer.parseInt(st.nextToken());
@@ -42,37 +43,32 @@ class Main {
             parent[i] = i;
         }
 
-        price = new int[n+1];
         st = new StringTokenizer(br.readLine());
+        cost = new int[n+1];
         for(int i=1;i<=n;i++){
-            price[i] = Integer.parseInt(st.nextToken());
+            cost[i] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i=1;i<=m;i++){
+        for(int i=0;i<m;i++){
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
             union(a,b);
         }
 
-        Set<Integer> set = new HashSet<>();
-        int sum = 0;
+        Set<Integer> friends = new HashSet<>();
+
         for(int i=1;i<=n;i++){
-            int parent = find(i);
-            if(!set.contains(parent)){
-                set.add(parent);
-                sum += price[parent];
+            if(!friends.contains(find(i))){
+                friends.add(find(i));
+                sum += cost[find(i)];
             }
         }
 
-        if(sum > k){
-            System.out.println("Oh no");
-        }else{
-            System.out.println(sum);
-        }
+        if(sum <= k) System.out.println(sum);
+        else System.out.println("Oh no");
 
 
 
     }
 }
-
