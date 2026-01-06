@@ -1,13 +1,13 @@
+select b.id, a.fish_name, b.length
+from fish_name_info as a
+    join (
+        select id, fish_type, length, rank() over(
+            partition by fish_type
+            order by length desc) as rvalue
+        from fish_info 
+         ) as b
+    on a.fish_type = b.fish_type
+where b.rvalue=1
+order by b.id
 
 
-
-SELECT a.ID, c.FISH_NAME, b.LENGTH
-FROM FISH_INFO as a
-join (SELECT FISH_TYPE, MAX(LENGTH) as LENGTH
-        FROM FISH_INFO
-        GROUP BY FISH_TYPE
-     ) as b
-    on a.FISH_TYPE = b.FISH_TYPE and a.LENGTH = b.LENGTH
-join FISH_NAME_INFO as c
-    on b.FISH_TYPE = c.FISH_TYPE
-order by a.ID
