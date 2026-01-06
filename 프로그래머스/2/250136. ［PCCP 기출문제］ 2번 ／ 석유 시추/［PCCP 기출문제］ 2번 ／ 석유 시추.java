@@ -1,20 +1,23 @@
 import java.util.*;
+import java.io.*;
+
 class Solution {
-    int n,m;    
+    int n,m;
     int[][] data;
     boolean[][] visited;
-    int[] dx = new int[] {0,0,1,-1};
-    int[] dy = new int[] {1,-1,0,0};
     int[] result;
     
+    int[] dx = {0,0,1,-1};
+    int[] dy = {1,-1,0,0};
     
     void bfs(int sx,int sy){
-        Set<Integer> set = new HashSet<>();
         Deque<int[]> dq = new ArrayDeque<>();
+        Set<Integer> set = new HashSet<>();
+        
         dq.offer(new int[] {sx,sy});
-        int cnt = 1;
         set.add(sy);
         visited[sx][sy] = true;
+        int cnt = 1;
         
         while(!dq.isEmpty()){
             int[] cur = dq.poll();
@@ -36,7 +39,6 @@ class Solution {
         for(int y : set){
             result[y] += cnt;
         }
-        
     }
     
     public int solution(int[][] land) {
@@ -48,17 +50,15 @@ class Solution {
         
         for(int i=0;i<n;i++){
             for(int j=0;j<m;j++){
-                if(data[i][j] == 1 && !visited[i][j] ){
+                if(data[i][j] == 1 && !visited[i][j]){
                     bfs(i,j);
                 }
             }
         }
-        
-        
-        int max = 0;
+        int answer = 0;
         for(int val : result){
-            max = Math.max(max,val);
+            answer = Math.max(answer,val);
         }
-        return max;
+        return answer;
     }
 }
