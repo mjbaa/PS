@@ -2,59 +2,73 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int[] dx = {0,0,1,-1};
-    static int[] dy = {1,-1,0,0};
-    static int[][] dist;
-    static int[][] data;
-
+    static class Node implements Comparable<Node>{
+        int x,y, weight;
+        Node(int x,int y, int weight){
+            this.x = x;
+            this.y = y;
+            this.weight = weight;
+        }
+        public int compareTo(Node o){
+            return Integer.compare(this.weight, o.weight);
+        }
+    }
     static int n,m;
+    static boolean[][] map;
+    static int[][] dist;
+    static int[] dx = new int[] {0,0,1,-1};
+    static int[] dy = new int[] {1,-1,0,0};
 
-    static void dijk(int sx,int sy){
-        PriorityQueue<int[]> pq = new PriorityQueue<>((a,b) -> a[2] - b[2]);
-        dist[sx][sy] = 0;
-        pq.add(new int[]{sx,sy,0});
+    static void dijks(){
+        PriorityQueue<Node> pq = new PriorityQueue<>();
+        pq.offer(new Node(0,0,0));
+        dist[0][0] = 0;
 
         while(!pq.isEmpty()){
-            int[] cur = pq.poll();
-            int x = cur[0],y = cur[1],w=cur[2];
+            Node cur = pq.poll();
 
-            for(int i=0;i<4;i++){
-                int nx = x+dx[i];
-                int ny = y+dy[i];
+            if(cur.weight > dist[cur.x][cur.y]) continue;
 
-                if(nx<0 || ny<0 || nx>=n || ny>=m) continue;
+            for(int f = 0; f<4;f++){
+                int nx = cur.x + dx[f];
+                int ny = cur.y + dy[f];
+                if(nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
+                int nd = dist[cur.x][cur.y];
+                if(map[nx][ny]) nd++;
 
-                int nw = data[nx][ny];
-
-                if(dist[nx][ny] > dist[x][y] + nw){
-                    dist[nx][ny] = dist[x][y] + nw;
-                    pq.add(new int[]{nx,ny,dist[nx][ny]});
+                if(nd < dist[nx][ny]) {
+                    dist[nx][ny] = nd;
+                    pq.offer(new Node(nx,ny,nd));
                 }
+
             }
         }
-
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
         m = Integer.parseInt(st.nextToken());
-        n = Integer.parseInt(st.nextToken());
-
+        n =  Integer.parseInt(st.nextToken());
+        map = new boolean[n][m];
         dist = new int[n][m];
-        for (int i = 0; i < n; i++) {
-            Arrays.fill(dist[i], Integer.MAX_VALUE);
-        }
 
-        data = new int[n][m];
         for(int i=0;i<n;i++){
             String line = br.readLine();
             for(int j=0;j<m;j++){
-                data[i][j] = line.charAt(j)-'0';
+                char val = line.charAt(j);
+                if(val =='0'){
+                    map[i][j] = false;
+                }else{
+                    map[i][j] = true;
+                }
             }
         }
+        for(int[] row : dist){
+            Arrays.fill(row,Integer.MAX_VALUE);
+        }
 
-        dijk(0,0);
+        dijks();
 
         System.out.println(dist[n-1][m-1]);
     }
