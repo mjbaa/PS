@@ -3,34 +3,38 @@ import java.util.*;
 
 public class Main {
     static int n,m;
-    static List<Integer>[] graph;
-    static boolean[] visited;
+    static int[] parent;
+    static boolean[] isCycle;
+    static int[] rank;
 
-    static boolean isTree(int start){
-        Set<Integer> set = new HashSet<>();
-        Deque<int[]> dq = new ArrayDeque<>();
+    static int find(int a){
+        if(a == parent[a]) return a;
 
-        dq.offer(new int[] {start,0}); // node , parent
-        set.add(start);
-        visited[start] = true;
+        return parent[a] = find(parent[a]);
+    }
 
-        while(!dq.isEmpty()){
-            int[] cur = dq.poll();
+    static void union(int a, int b){
+        int aRoot = find(a);
+        int bRoot = find(b);
 
-            for(int next : graph[cur[0]]){
-                if(next != cur[1]){
-                    if(set.contains(next)){
-                        return false;
-                    }
+        if(aRoot == bRoot) return;
 
-                    dq.offer(new int[] {next, cur[0]});
-                    set.add(next);
-                    visited[next] = true;
-                }
-            }
+        if(rank[aRoot] <  rank[bRoot]){
+            parent[aRoot] = bRoot;
+            isCycle[bRoot] |= isCycle[aRoot];
+        }else if(rank[aRoot] > rank[bRoot]){
+            parent[bRoot] = aRoot;
+            isCycle[aRoot] |= isCycle[bRoot];
+        }else{
+            rank[bRoot] += 1;
+            parent[aRoot] = bRoot;
+            isCycle[bRoot] |= isCycle[aRoot];
         }
 
-        return true;
+    }
+
+    static boolean isConnected(int a, int b){
+        return find(a) == find(b);
     }
 
     public static void main(String[] args) throws Exception {
@@ -43,25 +47,34 @@ public class Main {
             if((n = Integer.parseInt(st.nextToken())) == 0) break;
             m = Integer.parseInt(st.nextToken());
 
-            graph = new List[n+1];
+            parent = new int[n+1];
             for(int i=1;i<=n;i++) {
-                graph[i] = new ArrayList<>();
+                parent[i] = i;
             }
 
-            visited = new boolean[n+1];
+            isCycle = new boolean[n+1];
+            rank = new int[n+1];
 
             for(int i=1;i<=m;i++) {
                 st = new StringTokenizer(br.readLine());
                 int a = Integer.parseInt(st.nextToken());
                 int b = Integer.parseInt(st.nextToken());
-                graph[a].add(b);
-                graph[b].add(a);
+
+                if(isConnected(a,b)) {
+                    isCycle[find(a)] = true;
+                }else{
+                    union(a,b);
+                }
+
             }
 
-            int cnt = 0;
+            Set<Integer> set = new HashSet<>();
             for(int i=1;i<=n;i++) {
-                if(visited[i]) continue;
-                if(isTree(i)) cnt++;
+                set.add(find(i));
+            }
+            int cnt = 0;
+            for(int root : set){
+                if(!isCycle[root]) cnt++;
             }
 
             if(cnt == 0){
