@@ -2,56 +2,58 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static class Node implements Comparable<Node> {
-        int x,y, weight,preidx;
-        Node(int x,int y, int weight, int preidx){
+    static class Node implements Comparable<Node>{
+        int x,y,weight;
+        int preDir;
+
+        Node(int x,int y, int weight, int preDir){
             this.x = x;
             this.y = y;
             this.weight = weight;
-            this.preidx = preidx;
+            this.preDir = preDir;
         }
 
-        public int compareTo(Node o) {
+        public int compareTo(Node o){
             return Integer.compare(this.weight, o.weight);
         }
     }
 
-    static int[][] data;
+    static int w,h;
     static int[][][] dist;
+    static char[][] data;
+    static int[] location = new int[4];
+    static int[] dx = {0,1,0,-1};
+    static int[] dy = {1,0,-1,0};
 
-    static int[] dx = {1,0,-1,0};
-    static int[] dy = {0,1,0,-1};
-
-    static int n,m;
-
-    static int sx,sy,tx,ty;
+    static boolean cantGo(int x,int y){
+        return x<0 || y<0 || x >= h || y >= w || data[x][y] == '*';
+    }
 
     static void dijks(){
         PriorityQueue<Node> pq = new PriorityQueue<>();
-        for(int d = 0; d < 4; d++){
-            dist[sx][sy][d] = 0;
-            pq.offer(new Node(sx, sy, 0, d));
+        for(int i=0;i<4;i++){
+            dist[location[0]][location[1]][i] = 0;
+            pq.offer(new Node(location[0], location[1], 0, i));
         }
 
         while(!pq.isEmpty()){
             Node cur = pq.poll();
 
-            if(dist[cur.x][cur.y][cur.preidx] < cur.weight) continue;
+            if(cur.weight > dist[cur.x][cur.y][cur.preDir]) continue;
 
-            for(int f = 0; f<4;f++){
-                int nx = cur.x+dx[f];
-                int ny = cur.y+dy[f];
+            for(int f=0;f<4;f++){
+                int nx = cur.x + dx[f];
+                int ny = cur.y + dy[f];
+                if(cantGo(nx,ny)) continue;
 
-                if (nx < 0 || ny < 0 || nx >= n || ny >= m) continue;
-                if(data[nx][ny] == -1) continue;
+                int newWeight = cur.weight;
+                if(cur.preDir%2 != f%2) newWeight++;
 
-                int nd = cur.weight;
-                if (cur.preidx != f) nd++;
-
-                if(dist[nx][ny][f] > nd){
-                    dist[nx][ny][f] = nd;
-                    pq.offer(new Node(nx, ny, nd, f));
+                if(dist[nx][ny][f] > newWeight){
+                    dist[nx][ny][f] = newWeight;
+                    pq.offer(new Node(nx,ny,dist[nx][ny][f],f));
                 }
+
             }
         }
     }
@@ -59,32 +61,34 @@ public class Main {
     public static void main(String[] args) throws Exception {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        m = Integer.parseInt(st.nextToken());
-        n = Integer.parseInt(st.nextToken());
 
-        data = new int[n][m];
-        dist = new int[n][m][4];
-        for(int i=0;i<n;i++){
-            for(int j=0;j<m;j++){
+        w = Integer.parseInt(st.nextToken());
+        h = Integer.parseInt(st.nextToken());
+        dist = new int[h][w][4];
+        for(int i=0;i<h;i++){
+            for(int j=0;j<w;j++){
                 Arrays.fill(dist[i][j], Integer.MAX_VALUE);
             }
         }
 
-        boolean first = true;
+        data = new char[h][w];
 
-        for(int i=0;i<n;i++){
+        boolean first = true;
+        for(int i=0;i<h;i++){
             String line = br.readLine();
-            for(int j=0;j<m;j++){
-                char val = line.charAt(j);
-                if(val == 'C'){
+            for(int j=0;j<w;j++){
+                char c = line.charAt(j);
+                data[i][j] = c;
+
+                if(c == 'C'){
                     if(first){
-                        sx = i; sy = j;
+                        location[0] = i;
+                        location[1] = j;
                         first = false;
                     }else{
-                        tx = i; ty = j;
+                        location[2] = i;
+                        location[3] = j;
                     }
-                }else if(val == '*'){
-                    data[i][j] = -1;
                 }
             }
         }
@@ -92,9 +96,14 @@ public class Main {
         dijks();
 
         int ans = Integer.MAX_VALUE;
-        for(int d = 0; d < 4; d++){
-            ans = Math.min(ans, dist[tx][ty][d]);
+        for(int f=0;f<4;f++){
+            ans = Math.min(ans, dist[location[2]][location[3]][f]);
         }
+
         System.out.println(ans);
+
+
+
     }
+
 }
