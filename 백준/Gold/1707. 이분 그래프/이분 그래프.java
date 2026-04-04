@@ -1,54 +1,53 @@
-import java.io.*;
 import java.util.*;
+import java.io.*;
 
 public class Main {
-    static int k,e,v;
+    static int n,e;
     static List<Integer>[] graph;
-    static boolean[] visited;
-    static boolean[] colored;
-    static boolean flag;
+    static int[] visited;
 
-    static void bfs(int sidx){
-        Deque<Integer> dq = new  ArrayDeque<>();
-        dq.offer(sidx);
-        colored[sidx] = true;
-        visited[sidx] = true;
+    static boolean bfs(int start){
+        Deque<Integer> dq = new ArrayDeque<>();
+        dq.offer(start);
+        visited[start] = 1;
 
-        loop : while(!dq.isEmpty()){
+        while(!dq.isEmpty()){
             int cur = dq.poll();
+            int curColor = visited[cur];
+
+            int nextColor = 1;
+            if(curColor == 1) nextColor = 2;
 
             for(int next : graph[cur]){
-                if(visited[next]){
-                    if(colored[next] == colored[cur]){
-                        flag = false;
-                        break loop;
-                    }
-                }else{
-                    visited[next] = true;
-                    colored[next] = !colored[cur];
+                if(visited[next] == 0){
+                    visited[next] = nextColor;
                     dq.offer(next);
+                }else{
+                    if(visited[next] != nextColor) return false;
                 }
             }
         }
+
+        return true;
     }
 
-    public static void main(String[] ags) throws IOException {
+    public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
         StringBuilder sb = new StringBuilder();
-        k = Integer.parseInt(br.readLine());
-        for(int tc=1;tc<=k;tc++){
-            flag = true;
 
+        int t = Integer.parseInt(br.readLine());
+        for(int tc = 0;tc<t;tc++){
             st = new StringTokenizer(br.readLine());
-            v = Integer.parseInt(st.nextToken());
-            e =  Integer.parseInt(st.nextToken());
-            visited = new boolean[v+1];
-            colored = new boolean[v+1];
-            graph = new List[v+1];
-            for(int i=1;i<=v;i++){
+            n = Integer.parseInt(st.nextToken());
+            e = Integer.parseInt(st.nextToken());
+
+            graph = new List[n+1];
+            for(int i=1;i<=n;i++){
                 graph[i] = new ArrayList<>();
             }
+
+            visited = new int[n+1];
 
             for(int i=0;i<e;i++){
                 st = new StringTokenizer(br.readLine());
@@ -58,22 +57,24 @@ public class Main {
                 graph[b].add(a);
             }
 
-            for(int i=1;i<=v;i++){
-                if(!visited[i]){
-                    bfs(i);
+            boolean flag = false;
+            for(int i=1;i<=n;i++){
+                if(visited[i] == 0){
+                    if(!bfs(i)) {
+                        sb.append("NO").append("\n");
+                        flag = true;
+                        break;
+                    }
                 }
             }
+            if(flag) continue;
+            sb.append("YES");
+            sb.append("\n");
 
-
-            if(flag){
-                sb.append("YES\n");
-            }else{
-                sb.append("NO\n");
-            }
 
         }
         System.out.println(sb);
-
     }
+
 
 }
