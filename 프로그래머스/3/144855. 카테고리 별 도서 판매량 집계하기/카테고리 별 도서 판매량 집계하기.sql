@@ -6,5 +6,3 @@ join BOOK_SALES as b
 where SALES_DATE like "2022-01%"
 group by category
 order by category
-
-
