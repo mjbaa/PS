@@ -1,5 +1,5 @@
 -- 코드를 입력하세요
-
+/*
 SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
 from REST_INFO
 where (Food_TYPE, FAVORITES) in (
@@ -8,15 +8,14 @@ where (Food_TYPE, FAVORITES) in (
     group by FOOD_TYPE
 )
 order by FOOD_TYPE desc
-
-
-
-
-/*
-
-
-//1. 종류별로 최댓값
-//2. 최댓값인 REST_ID
-//3. 이 REST_ID에 대한 정보 출력
-
 */
+
+
+SELECT FOOD_TYPE, REST_ID, REST_NAME, FAVORITES
+FROM (
+    SELECT *, 
+           RANK() OVER (PARTITION BY FOOD_TYPE ORDER BY FAVORITES DESC) as rnk
+    FROM REST_INFO
+) AS ranked_table
+WHERE rnk = 1
+ORDER BY FOOD_TYPE DESC;
