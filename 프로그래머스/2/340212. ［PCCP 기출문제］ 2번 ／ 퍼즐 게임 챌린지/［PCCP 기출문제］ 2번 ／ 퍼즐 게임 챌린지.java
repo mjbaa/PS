@@ -1,48 +1,51 @@
-import java.io.*;
 import java.util.*;
+
 class Solution {
+    long limit;
+    int[] diffs;
+    int[] times;
+    int min = Integer.MAX_VALUE;
     
-    public boolean check(int level, int[] diffs, int[] times, long limit){
+
+    
+    boolean check(int val){
         long sum = 0;
-        
-        int time_prev = 0;
-        
         for(int i=0;i<times.length;i++){
-            if(diffs[i] <= level) sum += times[i];
-            else{
-                sum += (diffs[i] - level) * (times[i] + time_prev) + times[i];
-            }
+            int cur_diff = diffs[i];
+            int cur_time = times[i];
+            
+            //int prev_time = times[i-1];
+            if(val >= cur_diff) sum += cur_time;
+            else sum += (long) (cur_diff - val) * (cur_time + times[i-1]) + cur_time;
             
             if(sum > limit) return false;
-            
-            time_prev = times[i];
         }
-        
         return true;
     }
     
-    public int bnSearch(int left, int right, int[] diffs, int[] times, long limit){
-        int result = 1;
-        while(left <= right){
-            int mid = left + (right - left)/2;
-            
-            
-            if(check(mid,diffs,times,limit)){
-                result = mid;
+    void bnSearch(int l, int r){
+        int left = l;
+        int right = r;
+        
+        while(left<=right){
+            int mid = left +(right-left)/2;
+            if(check(mid)){
+                min = mid;
                 right = mid - 1;
             }else{
                 left = mid + 1;
             }
+            
         }
-        
-        return result;
     }
     
-    public int solution(int[] diffs, int[] times, long limit) {
+    public int solution(int[] d, int[] t, long l) {
+        limit = l;
+        diffs = d;
+        times = t;
         
+        bnSearch(1, 100000);
         
-        
-        int answer = bnSearch(1,100000, diffs, times, limit);
-        return answer;
+        return min;
     }
 }
